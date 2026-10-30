@@ -1,0 +1,46 @@
+# Section « Ce que je fais » de l'accueil.
+# Chaque outil a un nom et, si elle existe, une icône :
+#   - « logos:… » : logo en couleurs d'origine (bibliothèque Iconify « logos »)
+#   - « simple-icons:… » + color : logo d'une seule couleur, teinté avec la couleur officielle
+# Sans icône, un emplacement neutre s'affiche en attendant le fichier.
+
+- id: design
+  order: 1
+  title: Design et création visuelle
+  text: Je dessine des interfaces et des identités, je retouche des images et je monte des vidéos.
+  tools:
+    - { name: Figma, icon: 'logos:figma' }
+    - { name: Photoshop, icon: 'logos:adobe-photoshop' }
+    - { name: Illustrator, icon: 'logos:adobe-illustrator' }
+    - { name: Affinity }
+    - { name: DaVinci Resolve }
+
+- id: web
+  order: 2
+  title: Web et CMS
+  text: Je construis des sites et des plateformes de cours, puis je les fais évoluer.
+  tools:
+    - { name: Webflow, icon: 'simple-icons:webflow', color: '#146EF5' }
+    - { name: WordPress, icon: 'logos:wordpress-icon' }
+    - { name: Thinkific }
+    - { name: Astro, icon: 'logos:astro-icon' }
+
+- id: acquisition
+  order: 3
+  title: Acquisition et marketing
+  text: Je lance les campagnes, je suis les contacts qu’elles amènent et j’organise les rendez-vous.
+  tools:
+    - { name: Meta Ads, icon: 'logos:meta-icon' }
+    - { name: Google Ads, icon: 'logos:google-ads' }
+    - { name: HubSpot, icon: 'simple-icons:hubspot', color: '#FF7A59' }
+    - { name: Calendly, icon: 'simple-icons:calendly', color: '#006BFF' }
+
+- id: automation
+  order: 4
+  title: Automation et IA
+  text: J’automatise les tâches répétitives et je m’appuie sur l’IA pour avancer plus vite sur le reste.
+  tools:
+    - { name: Make }
+    - { name: Notion, icon: 'logos:notion-icon' }
+    - { name: Claude, icon: 'logos:claude-icon' }
+    - { name: ChatGPT, icon: 'logos:openai-icon' }

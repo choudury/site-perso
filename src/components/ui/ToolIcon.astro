@@ -1,0 +1,50 @@
+---
+/*
+ * Icône d'outil, insérée directement dans la page au moment du build (aucun script, aucune requête).
+ * Sans icône, un emplacement neutre s'affiche en attendant le fichier.
+ */
+import { getIconData, iconToSVG } from '@iconify/utils';
+import logos from '@iconify-json/logos/icons.json';
+import simpleIcons from '@iconify-json/simple-icons/icons.json';
+
+interface Props {
+  name: string;
+  icon?: string;
+  color?: string;
+}
+
+const { name, icon, color } = Astro.props;
+
+const sets = { logos, 'simple-icons': simpleIcons } as const;
+
+let svg: { body: string; viewBox: string } | undefined;
+if (icon) {
+  const [prefix, iconName] = icon.split(':') as [keyof typeof sets, string];
+  const data = sets[prefix] && getIconData(sets[prefix], iconName);
+  if (!data) throw new Error(`Icône introuvable : ${icon} (outil « ${name} »)`);
+  const rendered = iconToSVG(data);
+  svg = { body: rendered.body, viewBox: rendered.attributes.viewBox };
+}
+---
+
+<li class="flex flex-col items-center gap-2.5 text-center sm:w-20">
+  <span
+    class:list={[
+      'grid size-14 place-items-center rounded-control sm:size-16',
+      svg ? 'bg-page' : 'bg-placeholder',
+    ]}
+  >
+    {
+      svg && (
+        <svg
+          viewBox={svg.viewBox}
+          class="size-7 sm:size-8"
+          style={color ? `color: ${color}` : undefined}
+          aria-hidden="true"
+          set:html={svg.body}
+        />
+      )
+    }
+  </span>
+  <span class="text-small font-medium text-muted">{name}</span>
+</li>

@@ -28,6 +28,10 @@ export const fr = {
     inProgress: 'En cours',
     roles: 'Rôle',
   },
+  skills: {
+    title: 'Ce que je fais',
+    tools: 'Outils',
+  },
   status: {
     online: 'En ligne',
     offline: 'Hors ligne',

@@ -1,9 +1,11 @@
 /*
- * Collections de contenu : chaque fichier Markdown de src/content/projets/ est un projet.
- * Ajouter un projet = ajouter un fichier. Le schéma vérifie au build que rien ne manque.
+ * Collections de contenu.
+ *   - projets : chaque fichier Markdown de src/content/projets/ est un projet (ajouter un projet = ajouter un fichier) ;
+ *   - competences : les quatre groupes de la section « Ce que je fais », dans competences.yaml.
+ * Le schéma vérifie au build que rien ne manque.
  */
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const projets = defineCollection({
@@ -28,4 +30,22 @@ const projets = defineCollection({
     }),
 });
 
-export const collections = { projets };
+const competences = defineCollection({
+  loader: file('src/content/competences.yaml'),
+  schema: z.object({
+    order: z.number(),
+    title: z.string(),
+    text: z.string(),
+    tools: z.array(
+      z.object({
+        name: z.string(),
+        /** Identifiant Iconify, ex. « logos:figma ». Absent : emplacement en attendant l'icône. */
+        icon: z.string().optional(),
+        /** Couleur officielle, pour les logos d'une seule couleur (« simple-icons:… »). */
+        color: z.string().optional(),
+      }),
+    ),
+  }),
+});
+
+export const collections = { projets, competences };
