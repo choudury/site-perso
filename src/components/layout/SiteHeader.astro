@@ -1,4 +1,5 @@
 ---
+import Logo from '../../assets/logo.svg';
 import Button from '../ui/Button.astro';
 import LocalTime from '../LocalTime.astro';
 import ProfilePhoto from '../ProfilePhoto.astro';
@@ -58,8 +59,7 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
 >
   <div class="flex h-full flex-col px-gutter pt-6 pb-10">
     <div class="flex items-center justify-between">
-      <!-- Emplacement du logo en attendant le fichier SVG. -->
-      <div role="img" aria-label={fr.brand.logoAlt} class="size-12 rounded-control bg-placeholder"></div>
+      <Logo class="size-10 text-ink" role="img" aria-label={fr.brand.logoAlt} />
       <Button variant="secondary" data-menu-close>{fr.nav.close}</Button>
     </div>
 

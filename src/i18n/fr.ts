@@ -32,6 +32,21 @@ export const fr = {
     title: 'Ce que je fais',
     tools: 'Outils',
   },
+  presentation: {
+    title: 'Je m’appelle Dorian.',
+    paragraphs: [
+      'Je vis et je travaille à Toulouse. Je conçois des sites, je les fais vivre, je fais venir du monde.',
+      'Je passe du design au code, puis aux campagnes et aux automatisations. Ce qui relie tout ça : de la rigueur, et l’envie d’apprendre ce que je ne sais pas encore faire.',
+    ],
+    cta: 'En savoir plus sur moi',
+    collage: {
+      toulouse: 'Photo de Toulouse',
+      album: 'Pochette d’album',
+      book: 'Couverture de livre',
+      poster: 'Affiche de film',
+      mountain: 'Photo de montagne',
+    },
+  },
   status: {
     online: 'En ligne',
     offline: 'Hors ligne',

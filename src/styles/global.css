@@ -87,12 +87,14 @@
   --container-*: initial;
   --container-prose: 40rem; /* largeur de lecture ≈ 65 caractères */
   --container-site: 82rem; /* 1312 px de contenu max */
+  --container-fan: 56rem; /* éventail de visuels de la présentation */
 
   /* ---------- Rayons ---------- */
   --radius-*: initial;
   --radius-control: 12px; /* boutons, champs, tags */
   --radius-card: 16px; /* cartes, images */
   --radius-full: 9999px; /* voyant, curseur */
+  --radius-flag: 2px; /* petits drapeaux */
 
   /* ---------- Ombre (collage uniquement) ---------- */
   --shadow-*: initial;

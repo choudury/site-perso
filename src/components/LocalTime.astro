@@ -1,4 +1,5 @@
 ---
+import Occitanie from '../assets/drapeaux/occitanie.svg';
 import { site } from '../config/site';
 import { fr } from '../i18n/fr';
 
@@ -10,6 +11,7 @@ const { class: className } = Astro.props;
 ---
 
 <p class:list={['label-micro flex items-center gap-2', className]}>
+  <Occitanie class="h-2.5 w-auto rounded-flag" aria-hidden="true" />
   <span>{site.city}</span>
   <time data-local-time aria-label={fr.localTime}>--:--</time>
 </p>

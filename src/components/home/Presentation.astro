@@ -1,0 +1,25 @@
+---
+import Button from '../ui/Button.astro';
+import Collage from './Collage.astro';
+import { fr } from '../../i18n/fr';
+---
+
+<section aria-labelledby="presentation-titre" class="mx-auto max-w-site px-gutter pt-section">
+  <Collage />
+
+  <!-- Desktop : titre et bouton à gauche, texte à droite. Mobile : titre, texte, puis bouton. -->
+  <div class="mt-16 grid gap-6 md:mt-24 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-8">
+    <h2 id="presentation-titre" class="text-h2 font-medium lg:col-span-5">{fr.presentation.title}</h2>
+    <div
+      class="flex max-w-prose flex-col gap-4 text-lead font-light text-muted lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1"
+    >
+      {fr.presentation.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+    <div class="pt-2 lg:col-span-5 lg:row-start-2 lg:pt-0">
+      <Button href="/a-propos/" variant="secondary">
+        {fr.presentation.cta}
+        <span aria-hidden="true">→</span>
+      </Button>
+    </div>
+  </div>
+</section>

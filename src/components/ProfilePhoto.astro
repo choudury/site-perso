@@ -1,23 +1,28 @@
 ---
+import { Image } from 'astro:assets';
+import photo from '../assets/profil-dorian.png';
 import { fr } from '../i18n/fr';
 
 interface Props {
-  /** Photo de profil. Tant qu'elle est absente, un emplacement neutre s'affiche. */
-  src?: string;
   class?: string;
 }
 
-const { src, class: className } = Astro.props;
+const { class: className } = Astro.props;
 ---
 
 <div class:list={['relative shrink-0', className]}>
-  {
-    src ? (
-      <img src={src} alt={fr.hero.photoAlt} class="size-full rounded-control object-cover" />
-    ) : (
-      <div role="img" aria-label={fr.hero.photoAlt} class="size-full rounded-control bg-placeholder" />
-    )
-  }
+  <div class="size-full overflow-hidden rounded-control bg-placeholder">
+    <!-- Recadrage sur le visage : la photo d'origine est cadrée large. -->
+    <Image
+      src={photo}
+      alt={fr.hero.photoAlt}
+      widths={[64, 128, 192]}
+      sizes="56px"
+      loading="eager"
+      class="size-full object-cover"
+      style="transform: translate(-25%, 30%) scale(1.6)"
+    />
+  </div>
 
   <!-- Voyant de statut : vert entre 8 h et 19 h (heure de Toulouse), lune sinon. -->
   <span
