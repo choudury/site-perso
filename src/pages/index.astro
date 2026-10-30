@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
+import Projects from '../components/home/Projects.astro';
 import { site } from '../config/site';
 ---
 
 <BaseLayout title={site.name} description="Créateur digital à Toulouse. Du design à l’acquisition.">
   <main>
     <Hero />
+    <Projects />
   </main>
 </BaseLayout>

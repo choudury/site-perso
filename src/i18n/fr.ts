@@ -23,6 +23,11 @@ export const fr = {
     titleEnd: '.',
     photoAlt: 'Portrait de Dorian Lala-Clement',
   },
+  projects: {
+    title: 'Projets sélectionnés',
+    inProgress: 'En cours',
+    roles: 'Rôle',
+  },
   status: {
     online: 'En ligne',
     offline: 'Hors ligne',

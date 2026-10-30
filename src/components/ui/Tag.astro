@@ -1,17 +1,17 @@
 ---
 interface Props {
-  /** Fond du tag, choisi selon le fond sur lequel il est posé pour rester visible. */
+  /** Fond sur lequel le tag est posé, pour rester visible. */
   on?: 'page' | 'surface';
+  /** neutral : rôle, catégorie. accent : état à signaler discrètement (« En cours »). */
+  tone?: 'neutral' | 'accent';
 }
 
-const { on = 'page' } = Astro.props;
+const { on = 'page', tone = 'neutral' } = Astro.props;
+
+const background =
+  tone === 'accent' ? 'bg-accent-soft text-accent' : on === 'page' ? 'bg-surface text-muted' : 'bg-page text-muted';
 ---
 
-<span
-  class:list={[
-    'inline-flex items-center rounded-control px-2.5 py-1 text-small font-medium text-muted',
-    on === 'page' ? 'bg-surface' : 'bg-page',
-  ]}
->
+<span class:list={['inline-flex items-center rounded-control px-2.5 py-1 text-small font-medium', background]}>
   <slot />
 </span>
