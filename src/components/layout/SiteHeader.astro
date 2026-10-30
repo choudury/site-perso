@@ -1,0 +1,100 @@
+---
+import Button from '../ui/Button.astro';
+import LocalTime from '../LocalTime.astro';
+import ProfilePhoto from '../ProfilePhoto.astro';
+import { site } from '../../config/site';
+import { fr } from '../../i18n/fr';
+
+const links = [
+  { label: fr.nav.projects, href: '/#projets' },
+  { label: fr.nav.about, href: '/a-propos/' },
+  { label: fr.nav.contact, href: `mailto:${site.email}` },
+];
+
+// Le menu mobile ajoute l'accueil en tête.
+const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
+---
+
+<header class="flex items-center justify-between gap-6">
+  <a href="/" class="flex items-center gap-4 rounded-control" aria-label={`${site.name}, ${fr.nav.home}`}>
+    <ProfilePhoto class="size-12 md:size-14" />
+    <span class="hidden text-body font-medium md:inline">{site.name}</span>
+  </a>
+
+  <nav aria-label={fr.nav.label} class="hidden md:block">
+    <ul class="flex items-center gap-8">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="text-body font-medium text-ink transition-colors duration-(--duration-fast) ease-out hover:text-accent"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <Button
+    variant="secondary"
+    class="md:hidden"
+    aria-haspopup="dialog"
+    aria-controls="mobile-menu"
+    aria-expanded="false"
+    data-menu-open
+  >
+    {fr.nav.open}
+  </Button>
+</header>
+
+<!-- Menu mobile déplié : plein écran, avec le logo. -->
+<dialog
+  id="mobile-menu"
+  aria-label={fr.nav.label}
+  class="m-0 h-dvh max-h-none w-full max-w-none bg-page p-0 text-ink md:hidden"
+>
+  <div class="flex h-full flex-col px-gutter pt-6 pb-10">
+    <div class="flex items-center justify-between">
+      <!-- Emplacement du logo en attendant le fichier SVG. -->
+      <div role="img" aria-label={fr.brand.logoAlt} class="size-12 rounded-control bg-placeholder"></div>
+      <Button variant="secondary" data-menu-close>{fr.nav.close}</Button>
+    </div>
+
+    <nav class="mt-16">
+      <ul class="flex flex-col gap-4">
+        {
+          mobileLinks.map((link) => (
+            <li>
+              <a href={link.href} class="text-h1 font-medium text-ink active:text-accent" data-menu-link>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <LocalTime class="mt-auto" />
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#mobile-menu');
+  const openButton = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+
+  // showModal() rend le reste de la page inactif, piège le focus clavier dans le menu
+  // et ferme le menu avec la touche Échap.
+  openButton?.addEventListener('click', () => {
+    dialog?.showModal();
+    openButton.setAttribute('aria-expanded', 'true');
+  });
+
+  dialog?.addEventListener('close', () => openButton?.setAttribute('aria-expanded', 'false'));
+
+  dialog?.querySelectorAll('[data-menu-close], [data-menu-link]').forEach((el) => {
+    el.addEventListener('click', () => dialog.close());
+  });
+</script>

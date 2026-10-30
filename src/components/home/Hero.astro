@@ -1,0 +1,19 @@
+---
+import LocalTime from '../LocalTime.astro';
+import SiteHeader from '../layout/SiteHeader.astro';
+import { fr } from '../../i18n/fr';
+---
+
+<section class="mx-auto max-w-site px-gutter pt-5 md:pt-8">
+  <SiteHeader />
+
+  <div class="flex flex-col gap-8 pt-section md:gap-10">
+    <h1 class="text-display">
+      <span class="font-medium md:block">{fr.hero.titleStrong}</span>{' '}
+      <span class="font-light">{fr.hero.titleLight}</span><span class="font-light text-accent"
+        >{fr.hero.titleAccent}</span
+      ><span class="font-light">{fr.hero.titleEnd}</span>
+    </h1>
+    <LocalTime />
+  </div>
+</section>

@@ -4,6 +4,7 @@
  *
  * Usage (serveur de dev lancé) :
  *   node scripts/capture.mjs design-system
+ *   node scripts/capture.mjs "" --click "[data-menu-open]"   (clique d'abord sur un élément, ex. ouvrir le menu)
  *
  * Pilote Microsoft Edge en arrière-plan via le protocole DevTools.
  * Les images sont enregistrées dans captures/ (ignoré par Git).
@@ -19,6 +20,8 @@ const base = process.env.CAPTURE_BASE ?? 'http://localhost:4321';
 const edge =
   process.env.EDGE_PATH ?? 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
 const port = 9333;
+const clickIndex = process.argv.indexOf('--click');
+const clickSelector = clickIndex > -1 ? process.argv[clickIndex + 1] : null;
 
 const viewports = [
   { name: 'desktop', width: 1440, height: 900, mobile: false, scale: 1 },
@@ -68,7 +71,9 @@ const send = (method, params = {}) =>
   });
 
 mkdirSync('captures', { recursive: true });
-const slug = path === '/' ? 'accueil' : path.replace(/^\/|\/$/g, '').replace(/\//g, '-');
+const slug =
+  (path === '/' ? 'accueil' : path.replace(/^\/|\/$/g, '').replace(/\//g, '-')) +
+  (clickSelector ? '-clic' : '');
 
 try {
   await send('Page.enable');
@@ -87,6 +92,15 @@ try {
       expression: "document.querySelector('astro-dev-toolbar')?.remove(); document.fonts.ready",
       awaitPromise: true,
     });
+    if (clickSelector) {
+      // Ignore la taille d'écran où l'élément n'est pas visible (ex. bouton Menu en desktop).
+      const { result } = await send('Runtime.evaluate', {
+        expression: `(() => { const el = document.querySelector(${JSON.stringify(clickSelector)}); if (!el || !el.offsetParent) return false; el.click(); return true; })()`,
+        returnByValue: true,
+      });
+      if (!result.value) continue;
+      await sleep(400);
+    }
     const { contentSize } = await send('Page.getLayoutMetrics');
     const { data } = await send('Page.captureScreenshot', {
       format: 'png',

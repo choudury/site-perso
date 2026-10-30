@@ -137,6 +137,11 @@
     font-weight: var(--font-weight-normal);
   }
 
+  /* Bloque le défilement de la page quand le menu mobile est ouvert. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
   ::selection {
     background-color: var(--color-accent-soft);
     color: var(--color-ink);

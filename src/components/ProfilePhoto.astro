@@ -1,0 +1,52 @@
+---
+import { fr } from '../i18n/fr';
+
+interface Props {
+  /** Photo de profil. Tant qu'elle est absente, un emplacement neutre s'affiche. */
+  src?: string;
+  class?: string;
+}
+
+const { src, class: className } = Astro.props;
+---
+
+<div class:list={['relative shrink-0', className]}>
+  {
+    src ? (
+      <img src={src} alt={fr.hero.photoAlt} class="size-full rounded-control object-cover" />
+    ) : (
+      <div role="img" aria-label={fr.hero.photoAlt} class="size-full rounded-control bg-placeholder" />
+    )
+  }
+
+  <!-- Voyant de statut : vert entre 8 h et 19 h (heure de Toulouse), lune sinon. -->
+  <span
+    data-status="unknown"
+    role="img"
+    class="status absolute -right-1 -bottom-1 grid size-5 place-items-center rounded-full bg-page"
+  >
+    <span class="status-dot size-2.5 rounded-full bg-online"></span>
+    <svg
+      class="status-moon size-3 text-muted"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z"></path>
+    </svg>
+  </span>
+</div>
+
+<style>
+  .status[data-status='unknown'] {
+    visibility: hidden;
+  }
+  .status:not([data-status='online']) .status-dot,
+  .status:not([data-status='offline']) .status-moon {
+    display: none;
+  }
+</style>
+
+<script>
+  import '../lib/live-clock';
+</script>

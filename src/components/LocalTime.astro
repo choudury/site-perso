@@ -1,0 +1,19 @@
+---
+import { site } from '../config/site';
+import { fr } from '../i18n/fr';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<p class:list={['label-micro flex items-center gap-2', className]}>
+  <span>{site.city}</span>
+  <time data-local-time aria-label={fr.localTime}>--:--</time>
+</p>
+
+<script>
+  import '../lib/live-clock';
+</script>
