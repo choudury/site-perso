@@ -2,18 +2,118 @@
 import LocalTime from '../LocalTime.astro';
 import SiteHeader from '../layout/SiteHeader.astro';
 import { fr } from '../../i18n/fr';
+
+// L'accroche est découpée en mots pour les faire apparaître un par un.
+const strongWords = fr.hero.titleStrong.split(' ');
+const lightWords = fr.hero.titleLight.split(' ');
+// Le dernier fragment (« l’ ») reste collé au mot en violet.
+const lastLight = lightWords.pop();
 ---
 
-<section class="mx-auto max-w-site px-gutter pt-5 md:pt-8">
+<section data-hero class="mx-auto max-w-site px-gutter pt-5 md:pt-8">
   <SiteHeader />
 
   <div class="flex flex-col gap-8 pt-section md:gap-10">
     <h1 class="text-display">
-      <span class="font-medium md:block">{fr.hero.titleStrong}</span>{' '}
-      <span class="font-light">{fr.hero.titleLight}</span><span class="font-light text-accent"
-        >{fr.hero.titleAccent}</span
-      ><span class="font-light">{fr.hero.titleEnd}</span>
+      <span class="font-medium md:block">
+        {
+          strongWords.map((word) => (
+            <>
+              <span class="word-mask">
+                <span class="word" data-word>
+                  {word}
+                </span>
+              </span>{' '}
+            </>
+          ))
+        }
+      </span>
+      <span class="font-light">
+        {
+          lightWords.map((word) => (
+            <>
+              <span class="word-mask">
+                <span class="word" data-word>
+                  {word}
+                </span>
+              </span>{' '}
+            </>
+          ))
+        }
+        <span class="word-mask">
+          <span class="word" data-word>
+            {lastLight}<span class="text-accent" data-hero-accent>{fr.hero.titleAccent}</span>{
+              fr.hero.titleEnd
+            }
+          </span>
+        </span>
+      </span>
     </h1>
-    <LocalTime />
+    <div data-hero-time>
+      <LocalTime />
+    </div>
   </div>
 </section>
+
+<style>
+  /* Chaque mot glisse depuis le bas à l'intérieur d'un cache. Le cache déborde un peu
+     en haut et en bas pour ne couper ni les accents ni les jambages (g, p, q). */
+  .word-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-block: 0.1em 0.16em;
+    margin-block: -0.1em -0.16em;
+  }
+  .word {
+    display: inline-block;
+  }
+
+  /* Tant que l'animation n'est pas prête, le hero reste masqué pour éviter un flash.
+     Sécurités : rien n'est masqué sans JavaScript, ni quand le visiteur demande
+     moins d'animations, ni au-delà de 2,5 s si le script tarde (classe js-failsafe). */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js:not(.js-failsafe)) [data-hero] {
+      visibility: hidden;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const root = document.documentElement;
+
+  // Si la sécurité s'est déjà déclenchée, le hero est affiché : on ne le rejoue pas.
+  if (hero && !root.classList.contains('js-failsafe')) {
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      const header = hero.querySelectorAll('header > a, header nav li, header > button');
+      const status = hero.querySelector('header [data-status]');
+      const words = hero.querySelectorAll('[data-word]');
+      const accent = hero.querySelector('[data-hero-accent]');
+      const time = hero.querySelector('[data-hero-time]');
+      const ink = getComputedStyle(hero).color;
+
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+      // 1. L'en-tête descend légèrement en fondu.
+      tl.from(header, { y: -10, autoAlpha: 0, duration: 0.9, stagger: 0.06 }, 0);
+
+      // 2. Les mots montent un par un depuis leur cache.
+      tl.from(words, { yPercent: 115, duration: 1.1, stagger: 0.075 }, 0.15);
+
+      // 3. « acquisition » arrive en noir puis prend sa couleur violette.
+      tl.from(accent, { color: ink, duration: 0.9, ease: 'power2.inOut' }, '-=0.55');
+
+      // 4. Le voyant de statut et l'heure locale ferment la séquence.
+      if (status) tl.from(status, { scale: 0, duration: 0.7, ease: 'back.out(2.2)' }, '<');
+      tl.from(time, { y: 8, autoAlpha: 0, duration: 0.9 }, '<0.1');
+
+      // Les états de départ sont posés : le hero peut devenir visible.
+      gsap.set(hero, { visibility: 'visible' });
+    });
+  }
+</script>
