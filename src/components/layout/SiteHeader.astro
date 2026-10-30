@@ -7,15 +7,14 @@ import ProfilePhoto from '../ProfilePhoto.astro';
 import { site } from '../../config/site';
 import { fr } from '../../i18n/fr';
 
-// Les pages du site, puis le contact, traité à part comme un appel à l'action.
-const pages = [
+const links = [
   { label: fr.nav.projects, href: '/#projets' },
   { label: fr.nav.about, href: '/a-propos/' },
+  { label: fr.nav.contact, href: `mailto:${site.email}` },
 ];
-const contact = { label: fr.nav.contact, href: `mailto:${site.email}` };
 
 // Le menu mobile ajoute l'accueil en tête.
-const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...pages, contact];
+const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
 ---
 
 <header class="flex items-center justify-between gap-6">
@@ -25,22 +24,16 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...pages, contact];
   </a>
 
   <nav aria-label={fr.nav.label} class="hidden md:block">
-    <ul class="flex items-center gap-8">
+    <ul class="flex items-center gap-2">
       {
-        pages.map((link) => (
+        links.map((link) => (
           <li>
-            <a
-              href={link.href}
-              class="text-body font-medium text-ink transition-colors duration-(--duration-fast) ease-out hover:text-accent"
-            >
+            <Button href={link.href} variant="secondary">
               {link.label}
-            </a>
+            </Button>
           </li>
         ))
       }
-      <li class="ml-4">
-        <Button href={contact.href}>{contact.label}</Button>
-      </li>
     </ul>
   </nav>
 

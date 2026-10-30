@@ -14,14 +14,16 @@ const projets = defineCollection({
     z.object({
       /** Nom du projet, ex. « SawUp ». */
       name: z.string(),
-      /** Titre court affiché sur la carte de l'accueil. */
-      cardTitle: z.string(),
+      /** Mission de l'entreprise ou du projet, affichée sur la carte de l'accueil. */
+      mission: z.string(),
       /** Rôles de Dorian, affichés en tags. */
       roles: z.array(z.string()).min(1),
       /** Position sur l'accueil (1 = premier). */
       order: z.number(),
       /** Projet toujours en cours. */
       inProgress: z.boolean().default(false),
+      /** Dorian y est salarié aujourd'hui. */
+      currentJob: z.boolean().default(false),
       /** Adresse du site, s'il existe. */
       url: z.url().optional(),
       /** Visuel de la carte. Tant qu'il manque, un emplacement neutre s'affiche. */
@@ -35,7 +37,6 @@ const competences = defineCollection({
   schema: z.object({
     order: z.number(),
     title: z.string(),
-    text: z.string(),
     tools: z.array(
       z.object({
         name: z.string(),

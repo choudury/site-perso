@@ -14,8 +14,7 @@ const groups = (await getCollection('competences')).sort((a, b) => a.data.order 
       groups.map(({ data }) => (
         <li class="flex flex-col rounded-card bg-surface p-5 sm:p-8 lg:p-10">
           <h3 class="text-h3 font-medium">{data.title}</h3>
-          <p class="mt-3 max-w-prose text-muted">{data.text}</p>
-          <ul class="mt-8 -ml-1.5 grid grid-cols-4 gap-x-2 gap-y-6 sm:-ml-2 sm:flex sm:flex-wrap sm:gap-x-4" aria-label={fr.skills.tools}>
+          <ul class="mt-6 -ml-1.5 grid grid-cols-4 gap-x-2 gap-y-6 sm:-ml-2 sm:flex sm:flex-wrap sm:gap-x-4" aria-label={fr.skills.tools}>
             {data.tools.map((tool) => (
               <ToolIcon {...tool} />
             ))}

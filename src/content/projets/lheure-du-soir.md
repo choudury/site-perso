@@ -1,6 +1,6 @@
 ---
 name: L’Heure du Soir
-cardTitle: Le site et l’image d’une agence de musique live
+mission: Faire passer la musique des artistes de l’album à la scène
 roles: [Design, Web]
 order: 2
 inProgress: true

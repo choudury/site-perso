@@ -7,17 +7,20 @@ const projects = (await getCollection('projets')).sort((a, b) => a.data.order - 
 ---
 
 <section id="projets" aria-labelledby="projets-titre" class="mx-auto max-w-site scroll-mt-8 px-gutter pt-section">
-  <h2 id="projets-titre" class="text-h2 font-medium">{fr.projects.title}</h2>
+  <!-- Titre lu par les lecteurs d'écran seulement : les cartes parlent d'elles-mêmes. -->
+  <h2 id="projets-titre" class="sr-only">{fr.projects.title}</h2>
 
-  <ul class="mt-10 grid gap-4 md:mt-14 md:grid-cols-2 md:gap-6">
+  <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
     {
       projects.map(({ id, data }) => (
         <li>
           <Card
             href={`/projets/${id}/`}
             eyebrow={data.name}
-            badge={data.inProgress ? fr.projects.inProgress : undefined}
-            title={data.cardTitle}
+            badge={
+              data.currentJob ? fr.projects.currentJob : data.inProgress ? fr.projects.inProgress : undefined
+            }
+            title={data.mission}
             tags={data.roles}
             image={data.cover && { src: data.cover, alt: data.coverAlt ?? '' }}
           />

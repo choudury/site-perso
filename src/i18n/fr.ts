@@ -24,16 +24,17 @@ export const fr = {
     photoAlt: 'Portrait de Dorian Lala-Clement',
   },
   projects: {
-    title: 'Projets sélectionnés',
+    title: 'Projets',
     inProgress: 'En cours',
+    currentJob: 'Mon poste actuel',
     roles: 'Rôle',
   },
   skills: {
-    title: 'Ce que je fais',
+    title: 'Ma boîte à outils',
     tools: 'Outils',
   },
   presentation: {
-    title: 'Je m’appelle Dorian.',
+    title: 'Derrière l’écran',
     paragraphs: [
       'Je vis et je travaille à Toulouse. Je conçois des sites, je les fais vivre, je fais venir du monde.',
       'Je passe du design au code, puis aux campagnes et aux automatisations. Ce qui relie tout ça : de la rigueur, et l’envie d’apprendre ce que je ne sais pas encore faire.',

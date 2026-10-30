@@ -1,6 +1,7 @@
 ---
 name: SawUp
-cardTitle: Faire grandir une école de production musicale en ligne
+mission: Rendre accessible l’apprentissage de la production musicale
+currentJob: true
 roles: [Design, Web, Acquisition, Contenu]
 order: 1
 url: https://sawup.fr

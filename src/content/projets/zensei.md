@@ -1,6 +1,6 @@
 ---
 name: Zensei
-cardTitle: L’identité d’une IA qui pilote des investissements
+mission: Montrer aux investisseurs quels secteurs mènent le marché
 roles: [Branding]
 order: 4
 url: https://zensei.com
