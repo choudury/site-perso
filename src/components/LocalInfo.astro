@@ -1,0 +1,88 @@
+---
+/*
+ * Toulouse en direct : drapeau occitan, heure locale avec icône jour/nuit, météo.
+ * Les valeurs sont remplies par lib/live-toulouse.ts dans le navigateur.
+ */
+import Occitanie from '../assets/drapeaux/occitanie.svg';
+import Icon from './ui/Icon.astro';
+import { site } from '../config/site';
+import { fr } from '../i18n/fr';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Une icône par état du ciel ; seule celle qui correspond à la météo du moment est affichée.
+const skyIcons = {
+  'clear-day': 'sun',
+  'clear-night': 'moon',
+  'partly-day': 'cloud-sun',
+  'partly-night': 'cloud-moon',
+  cloudy: 'cloud',
+  fog: 'cloud-fog',
+  drizzle: 'cloud-drizzle',
+  rain: 'cloud-rain',
+  snow: 'cloud-snow',
+  storm: 'cloud-lightning',
+};
+---
+
+<div
+  class:list={[
+    'local-info flex flex-wrap items-center gap-x-5 gap-y-2 text-small font-medium text-muted tabular-nums sm:text-body',
+    className,
+  ]}
+  data-local-info
+  data-daypart="unknown"
+  data-sky="unknown"
+>
+  <span class="flex items-center gap-2 text-ink">
+    <Occitanie class="h-4 w-auto rounded-flag" aria-hidden="true" />
+    {site.city}
+  </span>
+
+  <span class="flex items-center gap-1.5">
+    <Icon name="sun" class="size-4" data-daypart-icon="day" />
+    <Icon name="moon" class="size-4" data-daypart-icon="night" />
+    <time data-local-time aria-label={fr.localTime}>--:--</time>
+  </span>
+
+  <span class="weather flex items-center gap-1.5" data-weather role="img" aria-label={fr.weather.label}>
+    {Object.entries(skyIcons).map(([sky, icon]) => <Icon name={icon} class="size-4" data-sky-icon={sky} />)}
+    <span data-weather-temp aria-hidden="true"></span>
+  </span>
+</div>
+
+<style is:global>
+  /* Seules les icônes correspondant au moment de la journée et au ciel actuel sont visibles. */
+  .local-info [data-daypart-icon],
+  .local-info [data-sky-icon] {
+    display: none;
+  }
+  .local-info[data-daypart='day'] [data-daypart-icon='day'],
+  .local-info[data-daypart='night'] [data-daypart-icon='night'] {
+    display: block;
+  }
+  .local-info[data-sky='clear-day'] [data-sky-icon='clear-day'],
+  .local-info[data-sky='clear-night'] [data-sky-icon='clear-night'],
+  .local-info[data-sky='partly-day'] [data-sky-icon='partly-day'],
+  .local-info[data-sky='partly-night'] [data-sky-icon='partly-night'],
+  .local-info[data-sky='cloudy'] [data-sky-icon='cloudy'],
+  .local-info[data-sky='fog'] [data-sky-icon='fog'],
+  .local-info[data-sky='drizzle'] [data-sky-icon='drizzle'],
+  .local-info[data-sky='rain'] [data-sky-icon='rain'],
+  .local-info[data-sky='snow'] [data-sky-icon='snow'],
+  .local-info[data-sky='storm'] [data-sky-icon='storm'] {
+    display: block;
+  }
+  /* Tant que la météo n'est pas chargée (ou si le service ne répond pas), elle reste masquée. */
+  .local-info[data-sky='unknown'] .weather {
+    display: none;
+  }
+</style>
+
+<script>
+  import '../lib/live-toulouse';
+</script>

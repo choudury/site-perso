@@ -57,7 +57,7 @@ export const fr = {
     linkedin: 'LinkedIn',
     instagram: 'Instagram',
     newTab: '(nouvel onglet)',
-    madeIn: 'Fait en France avec amour',
+    madeIn: 'Fabriqué en France',
     legal: 'Mentions légales',
   },
   legal: {
@@ -70,4 +70,20 @@ export const fr = {
     offline: 'Hors ligne',
   },
   localTime: 'Heure locale à Toulouse',
+  daypart: { day: 'Jour', night: 'Nuit' },
+  weather: {
+    label: 'Météo à Toulouse',
+    sky: {
+      'clear-day': 'Ensoleillé',
+      'clear-night': 'Nuit claire',
+      'partly-day': 'Éclaircies',
+      'partly-night': 'Éclaircies',
+      cloudy: 'Nuageux',
+      fog: 'Brouillard',
+      drizzle: 'Bruine',
+      rain: 'Pluie',
+      snow: 'Neige',
+      storm: 'Orage',
+    },
+  },
 } as const;

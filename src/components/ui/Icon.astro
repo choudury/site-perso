@@ -1,0 +1,32 @@
+---
+/*
+ * Icône d'interface (bibliothèque Lucide), insérée dans la page au moment du build.
+ * Elle prend la couleur du texte qui l'entoure.
+ */
+import { getIconData, iconToSVG } from '@iconify/utils';
+import lucide from '@iconify-json/lucide/icons.json';
+
+interface Props {
+  name: string;
+  class?: string;
+  /** Texte lu par les lecteurs d'écran. Sans label, l'icône est décorative. */
+  label?: string;
+  [key: `data-${string}`]: string | undefined;
+}
+
+const { name, class: className, label, ...rest } = Astro.props;
+
+const data = getIconData(lucide, name);
+if (!data) throw new Error(`Icône introuvable : ${name}`);
+const { body, attributes } = iconToSVG(data);
+---
+
+<svg
+  viewBox={attributes.viewBox}
+  class:list={['shrink-0', className]}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  set:html={body}
+  {...rest}
+/>

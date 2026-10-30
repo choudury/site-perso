@@ -1,19 +1,21 @@
 ---
 import Logo from '../../assets/logo.svg';
 import Button from '../ui/Button.astro';
-import LocalTime from '../LocalTime.astro';
+import Icon from '../ui/Icon.astro';
+import LocalInfo from '../LocalInfo.astro';
 import ProfilePhoto from '../ProfilePhoto.astro';
 import { site } from '../../config/site';
 import { fr } from '../../i18n/fr';
 
-const links = [
+// Les pages du site, puis le contact, traité à part comme un appel à l'action.
+const pages = [
   { label: fr.nav.projects, href: '/#projets' },
   { label: fr.nav.about, href: '/a-propos/' },
-  { label: fr.nav.contact, href: `mailto:${site.email}` },
 ];
+const contact = { label: fr.nav.contact, href: `mailto:${site.email}` };
 
 // Le menu mobile ajoute l'accueil en tête.
-const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
+const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...pages, contact];
 ---
 
 <header class="flex items-center justify-between gap-6">
@@ -25,7 +27,7 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
   <nav aria-label={fr.nav.label} class="hidden md:block">
     <ul class="flex items-center gap-8">
       {
-        links.map((link) => (
+        pages.map((link) => (
           <li>
             <a
               href={link.href}
@@ -36,6 +38,9 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
           </li>
         ))
       }
+      <li class="ml-4">
+        <Button href={contact.href}>{contact.label}</Button>
+      </li>
     </ul>
   </nav>
 
@@ -47,6 +52,7 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
     aria-expanded="false"
     data-menu-open
   >
+    <Icon name="plus" class="size-4" />
     {fr.nav.open}
   </Button>
 </header>
@@ -57,14 +63,18 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
   aria-label={fr.nav.label}
   class="m-0 h-dvh max-h-none w-full max-w-none bg-page p-0 text-ink md:hidden"
 >
-  <div class="flex h-full flex-col px-gutter pt-6 pb-10">
+  <div class="flex h-full flex-col px-gutter pt-5 pb-10">
     <div class="flex items-center justify-between">
-      <Logo class="size-10 text-ink" role="img" aria-label={fr.brand.logoAlt} />
-      <Button variant="secondary" data-menu-close>{fr.nav.close}</Button>
+      <Logo class="size-12 text-ink" role="img" aria-label={fr.brand.logoAlt} />
+      <Button variant="secondary" data-menu-close>
+        <Icon name="minus" class="size-4" />
+        {fr.nav.close}
+      </Button>
     </div>
 
-    <nav class="mt-16">
-      <ul class="flex flex-col gap-4">
+    <!-- Liens et infos légèrement en retrait par rapport au logo et au bouton Fermer. -->
+    <nav class="mt-16 px-4">
+      <ul class="flex flex-col gap-6">
         {
           mobileLinks.map((link) => (
             <li>
@@ -77,7 +87,7 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
       </ul>
     </nav>
 
-    <LocalTime class="mt-auto" />
+    <LocalInfo class="mt-auto px-4" />
   </div>
 </dialog>
 
