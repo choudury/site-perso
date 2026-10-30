@@ -1,0 +1,13 @@
+# Configuration de déploiement Netlify : lue automatiquement à chaque déploiement.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# La page de référence du design system n'a pas à être indexée.
+[[headers]]
+  for = "/design-system/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"

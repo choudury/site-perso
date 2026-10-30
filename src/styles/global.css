@@ -1,0 +1,162 @@
+/*
+ * Design system — source unique des valeurs visuelles du site.
+ *
+ * Chaque variable déclarée dans @theme devient à la fois :
+ *   - une variable CSS disponible partout (ex. var(--color-accent)) ;
+ *   - une classe Tailwind (ex. bg-accent, text-h2, rounded-card).
+ *
+ * Les palettes par défaut de Tailwind sont vidées (« initial ») : seules les
+ * valeurs ci-dessous existent. Une couleur, une taille ou un letter-spacing
+ * qui n'est pas ici ne peut donc pas être utilisé par accident.
+ */
+@import 'tailwindcss';
+
+@theme {
+  /* ---------- Couleurs ---------- */
+  --color-*: initial;
+
+  /* Échelle de gris froids. 150 → 500 dérivés entre #F1F1F4 et #6B6B76 (interpolation OKLab). */
+  --color-neutral-50: #fafafc;
+  --color-neutral-100: #f1f1f4;
+  --color-neutral-150: #e8e8ec;
+  --color-neutral-200: #dcdce0;
+  --color-neutral-300: #c0c0c6;
+  --color-neutral-400: #9e9ea6;
+  --color-neutral-500: #84848e;
+  --color-neutral-600: #6b6b76;
+  --color-neutral-950: #0a0a0b;
+
+  /* Accent violet profond et ses deux déclinaisons. */
+  --color-accent-soft: #efeffd;
+  --color-accent: #4c3a9e;
+  --color-accent-strong: #3d278b;
+
+  /* Voyant « en ligne » du hero. */
+  --color-online: #1f8a55;
+
+  /* Rôles sémantiques : les composants n'utilisent que ceux-ci.
+     Le futur mode sombre n'aura qu'à les redéfinir. */
+  --color-page: var(--color-neutral-50);
+  --color-surface: var(--color-neutral-100);
+  --color-surface-hover: var(--color-neutral-150);
+  --color-placeholder: var(--color-neutral-200);
+  --color-line: var(--color-neutral-200);
+  --color-ink: var(--color-neutral-950);
+  --color-muted: var(--color-neutral-600);
+  --color-on-accent: #ffffff;
+
+  /* ---------- Typographie ---------- */
+  --font-*: initial;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --font-weight-*: initial;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Tailles fluides : la valeur glisse entre un écran de 375 px et un écran de 1440 px. */
+  --text-*: initial;
+  --text-display: clamp(2.75rem, 1.782rem + 4.131vw, 5.5rem); /* 44 → 88 px */
+  --text-display--line-height: 1.04;
+  --text-h1: clamp(2.25rem, 1.634rem + 2.629vw, 4rem); /* 36 → 64 px */
+  --text-h1--line-height: 1.08;
+  --text-h2: clamp(1.75rem, 1.398rem + 1.502vw, 2.75rem); /* 28 → 44 px */
+  --text-h2--line-height: 1.15;
+  --text-h3: clamp(1.3125rem, 1.159rem + 0.657vw, 1.75rem); /* 21 → 28 px */
+  --text-h3--line-height: 1.25;
+  --text-lead: clamp(1.125rem, 1.037rem + 0.376vw, 1.375rem); /* 18 → 22 px */
+  --text-lead--line-height: 1.5;
+  --text-body: clamp(1rem, 0.978rem + 0.094vw, 1.0625rem); /* 16 → 17 px */
+  --text-body--line-height: 1.6;
+  --text-small: 0.875rem; /* 14 px */
+  --text-small--line-height: 1.5;
+  --text-micro: 0.8125rem; /* 13 px */
+  --text-micro--line-height: 1.4;
+
+  /* Letter-spacing : interdit par défaut, une seule valeur réservée aux micro-détails. */
+  --tracking-*: initial;
+  --tracking-micro: 0.06em;
+
+  /* ---------- Espacements ---------- */
+  /* L'échelle Tailwind de base (multiples de 4 px) est conservée pour les petits écarts.
+     Deux espacements de mise en page s'y ajoutent. */
+  --spacing-gutter: clamp(1.25rem, 0.809rem + 1.878vw, 2.5rem); /* marges latérales 20 → 40 px */
+  --spacing-section: clamp(6rem, 4.68rem + 5.634vw, 9.75rem); /* entre sections 96 → 156 px */
+
+  --container-*: initial;
+  --container-prose: 40rem; /* largeur de lecture ≈ 65 caractères */
+  --container-site: 82rem; /* 1312 px de contenu max */
+
+  /* ---------- Rayons ---------- */
+  --radius-*: initial;
+  --radius-control: 12px; /* boutons, champs, tags */
+  --radius-card: 16px; /* cartes, images */
+  --radius-full: 9999px; /* voyant, curseur */
+
+  /* ---------- Ombre (collage uniquement) ---------- */
+  --shadow-*: initial;
+  --shadow-soft: 0 1px 2px rgb(10 10 11 / 0.04), 0 16px 40px -12px rgb(10 10 11 / 0.14);
+
+  /* ---------- Mouvement ---------- */
+  --ease-*: initial;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --duration-fast: 160ms; /* survols de liens, boutons */
+  --duration-base: 320ms; /* survols de cartes */
+  --duration-slow: 700ms; /* zoom d'image, apparitions */
+}
+
+/* Style « micro-détail » : heure locale, numéros de section 01 / 02 / 03. */
+@utility label-micro {
+  font-size: var(--text-micro);
+  line-height: var(--text-micro--line-height);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-muted);
+}
+
+@layer base {
+  html {
+    background-color: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: var(--font-weight-normal);
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+
+  /* Focus clavier visible et cohérent sur tout le site. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-control);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

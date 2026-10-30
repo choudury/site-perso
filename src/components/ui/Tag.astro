@@ -1,0 +1,17 @@
+---
+interface Props {
+  /** Fond du tag, choisi selon le fond sur lequel il est posé pour rester visible. */
+  on?: 'page' | 'surface';
+}
+
+const { on = 'page' } = Astro.props;
+---
+
+<span
+  class:list={[
+    'inline-flex items-center rounded-control px-2.5 py-1 text-small font-medium text-muted',
+    on === 'page' ? 'bg-surface' : 'bg-page',
+  ]}
+>
+  <slot />
+</span>

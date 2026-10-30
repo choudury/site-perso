@@ -1,0 +1,296 @@
+---
+/*
+ * Page interne de référence du design system. Non indexée.
+ * Elle sert à valider visuellement les fondations avant de construire les pages.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+import Tag from '../components/ui/Tag.astro';
+import TextLink from '../components/ui/TextLink.astro';
+
+const semantic = [
+  { name: 'page', hex: '#FAFAFC', swatch: 'bg-page', use: 'Fond principal' },
+  { name: 'surface', hex: '#F1F1F4', swatch: 'bg-surface', use: 'Cartes, tags, boutons secondaires' },
+  { name: 'surface-hover', hex: '#E8E8EC', swatch: 'bg-surface-hover', use: 'Survol des surfaces' },
+  { name: 'placeholder', hex: '#DCDCE0', swatch: 'bg-placeholder', use: 'Emplacements d’images, filet fin' },
+  { name: 'muted', hex: '#6B6B76', swatch: 'bg-muted', use: 'Texte secondaire — contraste 5,05:1' },
+  { name: 'ink', hex: '#0A0A0B', swatch: 'bg-ink', use: 'Texte principal — contraste 19:1' },
+];
+
+const accents = [
+  { name: 'accent-soft', hex: '#EFEFFD', swatch: 'bg-accent-soft', use: 'Sélection de texte' },
+  { name: 'accent', hex: '#4C3A9E', swatch: 'bg-accent', use: 'Liens, boutons, un mot, curseur — 8,4:1' },
+  { name: 'accent-strong', hex: '#3D278B', swatch: 'bg-accent-strong', use: 'Survol des boutons' },
+  { name: 'online', hex: '#1F8A55', swatch: 'bg-online', use: 'Voyant « en ligne » (proposition)' },
+];
+
+const neutrals = [
+  { step: '50', swatch: 'bg-neutral-50' },
+  { step: '100', swatch: 'bg-neutral-100' },
+  { step: '150', swatch: 'bg-neutral-150' },
+  { step: '200', swatch: 'bg-neutral-200' },
+  { step: '300', swatch: 'bg-neutral-300' },
+  { step: '400', swatch: 'bg-neutral-400' },
+  { step: '500', swatch: 'bg-neutral-500' },
+  { step: '600', swatch: 'bg-neutral-600' },
+  { step: '950', swatch: 'bg-neutral-950' },
+];
+
+const typeScale = [
+  { token: 'display', size: '44 → 88 px', weight: 'Moyen 500', cls: 'text-display font-medium', sample: 'Créateur digital.' },
+  { token: 'h1', size: '36 → 64 px', weight: 'Moyen 500', cls: 'text-h1 font-medium', sample: 'Titre de page' },
+  { token: 'h2', size: '28 → 44 px', weight: 'Moyen 500', cls: 'text-h2 font-medium', sample: 'Ce que je fais' },
+  { token: 'h3', size: '21 → 28 px', weight: 'Moyen 500', cls: 'text-h3 font-medium', sample: 'Design et création visuelle' },
+  { token: 'lead', size: '18 → 22 px', weight: 'Léger 300', cls: 'text-lead font-light', sample: 'Je conçois des sites, je les fais vivre, je fais venir du monde.' },
+  { token: 'body', size: '16 → 17 px', weight: 'Normal 400', cls: 'text-body', sample: 'Texte courant. Phrases courtes, rythme soigné, sans adjectifs de vente.' },
+  { token: 'small', size: '14 px', weight: 'Moyen 500', cls: 'text-small font-medium text-muted', sample: 'Légendes, tags, informations secondaires' },
+];
+
+const spacings = [
+  { name: '1', px: 4, cls: 'w-1' },
+  { name: '2', px: 8, cls: 'w-2' },
+  { name: '3', px: 12, cls: 'w-3' },
+  { name: '4', px: 16, cls: 'w-4' },
+  { name: '6', px: 24, cls: 'w-6' },
+  { name: '8', px: 32, cls: 'w-8' },
+  { name: '12', px: 48, cls: 'w-12' },
+  { name: '16', px: 64, cls: 'w-16' },
+  { name: '24', px: 96, cls: 'w-24' },
+];
+---
+
+<BaseLayout title="Design system — Dorian Lala-Clement" noindex>
+  <main class="mx-auto max-w-site px-gutter py-section">
+    <header class="flex max-w-prose flex-col gap-4">
+      <p class="label-micro">Référence interne</p>
+      <h1 class="text-h1 font-medium">Design system</h1>
+      <p class="text-lead font-light text-muted">
+        Couleurs, typographie, espacements, rayons et composants de base. Toutes les pages du site
+        puisent ici, et nulle part ailleurs.
+      </p>
+    </header>
+
+    <!-- 01 Couleurs -->
+    <section class="mt-section flex flex-col gap-10" aria-labelledby="couleurs">
+      <div class="flex items-baseline gap-4">
+        <span class="label-micro">01</span>
+        <h2 id="couleurs" class="text-h2 font-medium">Couleurs</h2>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Rôles</h3>
+        <ul class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          {
+            semantic.map((c) => (
+              <li class="flex flex-col gap-3">
+                <div class:list={['aspect-square rounded-card ring-1 ring-line ring-inset', c.swatch]} />
+                <div class="flex flex-col">
+                  <span class="text-small font-medium">{c.name}</span>
+                  <span class="text-small text-muted">{c.hex}</span>
+                  <span class="text-small text-muted">{c.use}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Accent et statut</h3>
+        <ul class="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {
+            accents.map((c) => (
+              <li class="flex flex-col gap-3">
+                <div class:list={['aspect-2/1 rounded-card ring-1 ring-line ring-inset', c.swatch]} />
+                <div class="flex flex-col">
+                  <span class="text-small font-medium">{c.name}</span>
+                  <span class="text-small text-muted">{c.hex}</span>
+                  <span class="text-small text-muted">{c.use}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Échelle de gris (froids)</h3>
+        <ul class="grid grid-cols-9 gap-1.5 sm:gap-3">
+          {
+            neutrals.map((n) => (
+              <li class="flex flex-col gap-2">
+                <div class:list={['h-14 rounded-control ring-1 ring-line ring-inset sm:h-20', n.swatch]} />
+                <span class="text-small text-muted">{n.step}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="max-w-prose text-small text-muted">
+          Les gris 300 à 500 n’atteignent pas le contraste minimal pour du texte : ils sont réservés aux
+          éléments non textuels (emplacements, icônes inactives).
+        </p>
+      </div>
+    </section>
+
+    <!-- 02 Typographie -->
+    <section class="mt-section flex flex-col gap-10" aria-labelledby="typographie">
+      <div class="flex items-baseline gap-4">
+        <span class="label-micro">02</span>
+        <h2 id="typographie" class="text-h2 font-medium">Typographie</h2>
+      </div>
+
+      <div class="flex flex-col gap-4 rounded-card bg-surface p-6 sm:p-10">
+        <span class="label-micro">Accroche du hero — test de hiérarchie</span>
+        <p class="text-display">
+          <span class="font-medium">Créateur digital.</span>{' '}
+          <span class="font-light">Du design à l’</span><span class="font-light text-accent">acquisition</span><span class="font-light">.</span>
+        </p>
+      </div>
+
+      <ul class="flex flex-col gap-8">
+        {
+          typeScale.map((t) => (
+            <li class="grid gap-2 md:grid-cols-[12rem_1fr] md:gap-8">
+              <div class="flex flex-row gap-3 md:flex-col md:gap-0">
+                <span class="text-small font-medium">{t.token}</span>
+                <span class="text-small text-muted">{t.size}</span>
+                <span class="text-small text-muted">{t.weight}</span>
+              </div>
+              <p class={t.cls}>{t.sample}</p>
+            </li>
+          ))
+        }
+        <li class="grid gap-2 md:grid-cols-[12rem_1fr] md:gap-8">
+          <div class="flex flex-row gap-3 md:flex-col md:gap-0">
+            <span class="text-small font-medium">micro</span>
+            <span class="text-small text-muted">13 px</span>
+            <span class="text-small text-muted">Moyen 500 + espacement</span>
+          </div>
+          <p class="flex gap-6">
+            <span class="label-micro">01</span>
+            <span class="label-micro">Toulouse 14:32</span>
+          </p>
+        </li>
+      </ul>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Graisses Geist</h3>
+        <ul class="flex flex-wrap gap-x-10 gap-y-4 text-h3">
+          <li class="font-light">Léger 300</li>
+          <li class="font-normal">Normal 400</li>
+          <li class="font-medium">Moyen 500</li>
+          <li class="font-semibold">Semi-gras 600</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 03 Espacements, rayons, ombre -->
+    <section class="mt-section flex flex-col gap-10" aria-labelledby="espacements">
+      <div class="flex items-baseline gap-4">
+        <span class="label-micro">03</span>
+        <h2 id="espacements" class="text-h2 font-medium">Espacements, rayons, ombre</h2>
+      </div>
+
+      <div class="grid gap-10 lg:grid-cols-2">
+        <div class="flex flex-col gap-4">
+          <h3 class="text-small font-medium text-muted">Échelle (base 4 px)</h3>
+          <ul class="flex flex-col gap-2">
+            {
+              spacings.map((s) => (
+                <li class="flex items-center gap-4">
+                  <span class="w-10 text-small text-muted">{s.px}</span>
+                  <span class:list={['h-3 rounded-full bg-accent', s.cls]} />
+                </li>
+              ))
+            }
+          </ul>
+          <p class="max-w-prose text-small text-muted">
+            Deux espacements de mise en page complètent l’échelle : <strong class="font-medium text-ink">gutter</strong>
+            (marges latérales, 20 → 40 px) et <strong class="font-medium text-ink">section</strong> (entre deux
+            sections, 96 → 156 px).
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <h3 class="text-small font-medium text-muted">Rayons et ombre</h3>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="flex flex-col gap-2">
+              <div class="aspect-square rounded-control bg-surface" />
+              <span class="text-small text-muted">control · 12 px</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="aspect-square rounded-card bg-surface" />
+              <span class="text-small text-muted">card · 16 px</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="aspect-square rounded-card bg-page shadow-soft" />
+              <span class="text-small text-muted">ombre douce (collage)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 Composants -->
+    <section class="mt-section flex flex-col gap-12" aria-labelledby="composants">
+      <div class="flex items-baseline gap-4">
+        <span class="label-micro">04</span>
+        <h2 id="composants" class="text-h2 font-medium">Composants</h2>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Boutons</h3>
+        <div class="flex flex-wrap gap-3">
+          <Button href="#composants">M’écrire</Button>
+          <Button href="#composants" variant="secondary">En savoir plus</Button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Liens</h3>
+        <p class="max-w-prose">
+          Un lien dans le texte ressemble à <TextLink href="#composants">ceci</TextLink>, souligné finement
+          en violet.
+        </p>
+        <div class="flex flex-wrap gap-8">
+          <TextLink href="#composants" variant="arrow">Voir le projet</TextLink>
+          <TextLink href="#composants" variant="arrow">À propos de moi</TextLink>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Tags de rôle</h3>
+        <div class="flex flex-wrap gap-1.5">
+          <Tag>Design</Tag>
+          <Tag>Web</Tag>
+          <Tag>Acquisition</Tag>
+          <Tag>Branding</Tag>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Cartes projet</h3>
+        <div class="grid gap-4 md:grid-cols-2 md:gap-6">
+          <Card href="#composants" title="Nom du projet" tags={['Design', 'Web', 'Acquisition']} />
+          <Card href="#composants" title="Autre projet" tags={['Branding']} />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Emplacements d’image</h3>
+        <div class="grid grid-cols-3 gap-4">
+          <Placeholder label="Photo" ratio="1 / 1" />
+          <Placeholder label="Album" ratio="1 / 1" />
+          <Placeholder label="Affiche" ratio="2 / 3" />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h3 class="text-small font-medium text-muted">Filet fin (usage ponctuel)</h3>
+        <hr class="border-line" />
+      </div>
+    </section>
+  </main>
+</BaseLayout>

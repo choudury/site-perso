@@ -1,0 +1,51 @@
+---
+import Placeholder from './Placeholder.astro';
+import Tag from './Tag.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  tags?: string[];
+  /** Visuel de la carte. Tant qu'il est absent, un emplacement neutre s'affiche. */
+  image?: { src: string; alt: string };
+}
+
+const { href, title, tags = [], image } = Astro.props;
+---
+
+<a
+  href={href}
+  class="group block overflow-hidden rounded-card bg-surface transition-colors duration-(--duration-base) ease-out hover:bg-surface-hover"
+>
+  <div class="overflow-hidden">
+    {
+      image ? (
+        <img
+          src={image.src}
+          alt={image.alt}
+          loading="lazy"
+          class="aspect-4/3 w-full object-cover transition-transform duration-(--duration-slow) ease-out group-hover:scale-102"
+        />
+      ) : (
+        <Placeholder
+          label="Visuel à venir"
+          class="rounded-none transition-transform duration-(--duration-slow) ease-out group-hover:scale-102"
+        />
+      )
+    }
+  </div>
+  <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+    <h3 class="text-h3 font-medium">{title}</h3>
+    {
+      tags.length > 0 && (
+        <ul class="flex flex-wrap gap-1.5" aria-label="Rôle">
+          {tags.map((tag) => (
+            <li>
+              <Tag on="surface">{tag}</Tag>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</a>
