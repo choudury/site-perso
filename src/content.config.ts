@@ -26,9 +26,18 @@ const projets = defineCollection({
       currentJob: z.boolean().default(false),
       /** Adresse du site, s'il existe. */
       url: z.url().optional(),
-      /** Visuel de la carte. Tant qu'il manque, un emplacement neutre s'affiche. */
+      /** Visuel de la carte et grande image de la page projet. Sans visuel, un emplacement neutre s'affiche. */
       cover: image().optional(),
       coverAlt: z.string().optional(),
+
+      // Page projet
+      /** Phrase de contexte sous le titre de la page. */
+      context: z.string(),
+      /** Titre court orienté résultat. À défaut, la mission sert de titre. */
+      headline: z.string().optional(),
+      year: z.string().optional(),
+      duration: z.string().optional(),
+      tools: z.array(z.string()).optional(),
     }),
 });
 

@@ -1,0 +1,182 @@
+---
+/*
+ * Modèle commun aux pages projet. Une page est générée par fichier de src/content/projets/.
+ * Tant que l'étude de cas (le texte sous l'en-tête du fichier) est vide,
+ * la page affiche « Étude de cas bientôt disponible » avec les infos de base.
+ */
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/layout/SiteHeader.astro';
+import SiteFooter from '../../components/layout/SiteFooter.astro';
+import Placeholder from '../../components/ui/Placeholder.astro';
+import Tag from '../../components/ui/Tag.astro';
+import { site } from '../../config/site';
+import { fr } from '../../i18n/fr';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projets')).sort((a, b) => a.data.order - b.data.order);
+  // Le projet suivant du dernier est le premier : on boucle.
+  return projects.map((project, index) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(index + 1) % projects.length] },
+  }));
+}
+
+const { project, next } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+
+// Les commentaires (guide de rédaction) ne comptent pas comme du contenu.
+const hasCaseStudy = (project.body ?? '').replace(/<!--[\s\S]*?-->/g, '').trim().length > 0;
+
+const badge = data.currentJob ? fr.projects.currentJob : data.inProgress ? fr.projects.inProgress : undefined;
+
+// Infos clés : seules celles qui sont renseignées s'affichent.
+const facts = [
+  { label: fr.caseStudy.role, value: data.roles.join(', ') },
+  { label: fr.caseStudy.year, value: data.year },
+  { label: fr.caseStudy.duration, value: data.duration },
+  { label: fr.caseStudy.tools, value: data.tools?.join(', ') },
+].filter((fact) => fact.value);
+---
+
+<BaseLayout title={`${data.name} — ${site.name}`} description={data.mission}>
+  <div class="mx-auto w-full max-w-site px-gutter pt-5 md:pt-8">
+    <SiteHeader />
+  </div>
+
+  <main class="mx-auto w-full max-w-site px-gutter">
+    <!-- 1. En-tête -->
+    <header class="flex flex-col gap-6 pt-section">
+      <p class="flex items-center gap-2 text-body font-medium text-muted">
+        {data.name}
+        {badge && <Tag tone="accent">{badge}</Tag>}
+      </p>
+      <h1 class="text-h1 font-medium">{data.headline ?? data.mission}</h1>
+      <p class="max-w-prose text-lead font-light text-muted">{data.context}</p>
+      <ul class="flex flex-wrap gap-1.5" aria-label={fr.projects.roles}>
+        {
+          data.roles.map((role) => (
+            <li>
+              <Tag>{role}</Tag>
+            </li>
+          ))
+        }
+      </ul>
+    </header>
+
+    <!-- 2. Image principale -->
+    <div class="mt-14 overflow-hidden rounded-card md:mt-20">
+      {
+        data.cover ? (
+          <Image
+            src={data.cover}
+            alt={data.coverAlt ?? ''}
+            widths={[768, 1280, 1920, 2624]}
+            sizes="(min-width: 82rem) 82rem, 100vw"
+            loading="eager"
+            class="aspect-16/9 w-full object-cover"
+          />
+        ) : (
+          <Placeholder label="Visuel à venir" ratio="16 / 9" class="rounded-none" />
+        )
+      }
+    </div>
+
+    <!-- 3. Infos clés -->
+    <section aria-label={fr.caseStudy.keyFacts} class="mt-10 md:mt-14">
+      <dl class="grid gap-6 rounded-card bg-surface p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
+        {
+          facts.map((fact) => (
+            <div class="flex flex-col gap-1">
+              <dt class="text-small font-medium text-muted">{fact.label}</dt>
+              <dd class="text-body font-medium">{fact.value}</dd>
+            </div>
+          ))
+        }
+        {
+          data.url && (
+            <div class="flex flex-col gap-1">
+              <dt class="text-small font-medium text-muted">{fr.caseStudy.website}</dt>
+              <dd class="text-body font-medium">
+                <a
+                  href={data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-accent underline decoration-accent/35 decoration-1 underline-offset-4 transition-colors duration-(--duration-fast) ease-out hover:decoration-accent"
+                >
+                  {new URL(data.url).hostname.replace(/^www\./, '')}
+                  <span class="sr-only">{fr.footer.newTab}</span>
+                </a>
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </section>
+
+    <!-- 4 à 6. Contexte et défi, ce que j'ai fait, résultat : rédigés en Markdown -->
+    {
+      hasCaseStudy ? (
+        <article class="case-study mt-section">
+          <Content />
+        </article>
+      ) : (
+        <section class="mt-section flex flex-col items-start gap-3 rounded-card bg-surface p-6 sm:p-10">
+          <h2 class="text-h3 font-medium">{fr.caseStudy.comingSoon}</h2>
+          <p class="max-w-prose text-muted">{fr.caseStudy.comingSoonText}</p>
+        </section>
+      )
+    }
+
+    <!-- 7. Projet suivant -->
+    <nav aria-label={fr.caseStudy.next} class="py-section">
+      <a
+        href={`/projets/${next.id}/`}
+        class="group flex flex-col gap-3 rounded-card bg-surface p-6 transition-colors duration-(--duration-base) ease-out hover:bg-surface-hover sm:p-10"
+      >
+        <span class="text-small font-medium text-muted">{fr.caseStudy.next}</span>
+        <span class="flex items-baseline justify-between gap-6">
+          <span class="flex flex-col gap-1">
+            <span class="text-h2 font-medium">{next.data.name}</span>
+            <span class="text-body text-muted">{next.data.mission}</span>
+          </span>
+          <span
+            aria-hidden="true"
+            class="text-h2 transition-transform duration-(--duration-fast) ease-out group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </span>
+      </a>
+    </nav>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  /* Mise en forme des études de cas écrites en Markdown. */
+  .case-study {
+    max-width: var(--container-prose);
+  }
+  .case-study :global(h2) {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    font-weight: var(--font-weight-medium);
+    margin-top: 4rem;
+  }
+  .case-study :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .case-study :global(p),
+  .case-study :global(ul) {
+    margin-top: 1.25rem;
+    color: var(--color-muted);
+  }
+  .case-study :global(img) {
+    margin-block: 2.5rem;
+    border-radius: var(--radius-card);
+  }
+</style>

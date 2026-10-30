@@ -29,6 +29,17 @@ export const fr = {
     currentJob: 'Mon poste actuel',
     roles: 'Rôle',
   },
+  caseStudy: {
+    keyFacts: 'Infos clés',
+    role: 'Rôle',
+    year: 'Année',
+    duration: 'Durée',
+    tools: 'Outils',
+    website: 'Site',
+    comingSoon: 'Étude de cas bientôt disponible',
+    comingSoonText: 'Le détail de ce projet arrive : le contexte, ce que j’ai fait et le résultat.',
+    next: 'Projet suivant',
+  },
   skills: {
     title: 'Ma boîte à outils',
     tools: 'Outils',
