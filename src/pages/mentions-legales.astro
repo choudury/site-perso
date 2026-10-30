@@ -1,0 +1,25 @@
+---
+// Page volontairement vide : Dorian rédigera le contenu.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import { site } from '../config/site';
+import { fr } from '../i18n/fr';
+---
+
+<BaseLayout title={`${fr.legal.title} — ${site.name}`}>
+  <main class="mx-auto w-full max-w-site flex-1 px-gutter py-section">
+    <a
+      href="/"
+      class="group inline-flex items-center gap-1.5 font-medium text-ink transition-colors duration-(--duration-fast) ease-out hover:text-accent"
+    >
+      <span
+        aria-hidden="true"
+        class="transition-transform duration-(--duration-fast) ease-out group-hover:-translate-x-0.5">←</span
+      >
+      {fr.legal.back}
+    </a>
+    <h1 class="mt-10 text-h1 font-medium">{fr.legal.title}</h1>
+    <p class="mt-6 text-lead font-light text-muted">{fr.legal.pending}</p>
+  </main>
+  <SiteFooter />
+</BaseLayout>

@@ -1,0 +1,49 @@
+---
+import France from '../../assets/drapeaux/france.svg';
+import Logo from '../../assets/logo.svg';
+import LocalTime from '../LocalTime.astro';
+import { site } from '../../config/site';
+import { fr } from '../../i18n/fr';
+
+const socials = [
+  { label: fr.footer.linkedin, href: site.socials.linkedin },
+  { label: fr.footer.instagram, href: site.socials.instagram },
+];
+
+const linkClass =
+  'text-small font-medium text-ink transition-colors duration-(--duration-fast) ease-out hover:text-accent';
+---
+
+<footer aria-label={fr.footer.label} class="mx-auto w-full max-w-site px-gutter pb-gutter">
+  <div class="flex flex-col gap-10 rounded-card bg-surface p-6 sm:p-8 lg:p-10">
+    <div class="flex items-center justify-between gap-6">
+      <a href="/" aria-label={`${site.name}, ${fr.nav.home}`} class="rounded-control">
+        <Logo class="size-8 text-ink" aria-hidden="true" />
+      </a>
+      <ul class="flex items-center gap-6" aria-label={fr.footer.links}>
+        {
+          socials.map((link) => (
+            <li>
+              <a href={link.href} target="_blank" rel="noopener noreferrer" class={linkClass}>
+                {link.label}
+                <span class="sr-only">{fr.footer.newTab}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <LocalTime />
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+        <p class="flex items-center gap-2 text-small text-muted">
+          <France class="h-2.5 w-auto rounded-flag" aria-hidden="true" />
+          {fr.footer.madeIn}
+        </p>
+        <p class="text-small text-muted">© {new Date().getFullYear()} {site.name}</p>
+        <a href="/mentions-legales/" class={linkClass}>{fr.footer.legal}</a>
+      </div>
+    </div>
+  </div>
+</footer>

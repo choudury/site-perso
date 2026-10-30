@@ -26,7 +26,8 @@ const { title, description = '', noindex = false } = Astro.props;
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
   </head>
-  <body>
+  <!-- Le pied de page reste en bas de l'écran même sur une page courte. -->
+  <body class="flex min-h-svh flex-col">
     <slot />
   </body>
 </html>

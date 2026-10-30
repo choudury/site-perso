@@ -4,6 +4,8 @@ import Hero from '../components/home/Hero.astro';
 import Projects from '../components/home/Projects.astro';
 import Skills from '../components/home/Skills.astro';
 import Presentation from '../components/home/Presentation.astro';
+import Contact from '../components/Contact.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
 import { site } from '../config/site';
 ---
 
@@ -13,5 +15,7 @@ import { site } from '../config/site';
     <Projects />
     <Skills />
     <Presentation />
+    <Contact />
   </main>
+  <SiteFooter />
 </BaseLayout>

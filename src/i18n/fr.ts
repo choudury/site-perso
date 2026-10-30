@@ -47,6 +47,24 @@ export const fr = {
       mountain: 'Photo de montagne',
     },
   },
+  contact: {
+    title: 'Un projet, une question ? Écrivez-moi.',
+    emailLabel: 'M’écrire à',
+  },
+  footer: {
+    label: 'Pied de page',
+    links: 'Liens',
+    linkedin: 'LinkedIn',
+    instagram: 'Instagram',
+    newTab: '(nouvel onglet)',
+    madeIn: 'Fait en France avec amour',
+    legal: 'Mentions légales',
+  },
+  legal: {
+    title: 'Mentions légales',
+    pending: 'Cette page est en cours de rédaction.',
+    back: 'Retour à l’accueil',
+  },
   status: {
     online: 'En ligne',
     offline: 'Hors ligne',

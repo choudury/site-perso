@@ -1,0 +1,26 @@
+---
+/* Appel à écrire, avec l'adresse mail en grand. Réutilisé en bas de l'accueil et de la page À propos. */
+import { site } from '../config/site';
+import { fr } from '../i18n/fr';
+---
+
+<section aria-labelledby="contact-titre" class="mx-auto max-w-site px-gutter py-section">
+  <h2 id="contact-titre" class="max-w-prose text-h2 font-medium">{fr.contact.title}</h2>
+  <a
+    href={`mailto:${site.email}`}
+    aria-label={`${fr.contact.emailLabel} ${site.email}`}
+    class="group mt-6 inline-flex max-w-full items-baseline gap-3 text-h2 font-light break-words text-accent md:mt-8 md:text-h1"
+  >
+    <span
+      class="underline decoration-accent/25 decoration-1 underline-offset-4 transition-colors duration-(--duration-fast) ease-out group-hover:decoration-accent"
+    >
+      {site.email}
+    </span>
+    <span
+      aria-hidden="true"
+      class="transition-transform duration-(--duration-fast) ease-out group-hover:translate-x-1"
+    >
+      →
+    </span>
+  </a>
+</section>
