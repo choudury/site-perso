@@ -5,20 +5,23 @@ import GalleryPicker from './GalleryPicker.astro';
 import { fr } from '../../i18n/fr';
 ---
 
-<!-- Desktop : emojis, titre, texte et bouton à gauche, photo à droite. Mobile : photo, puis le reste.
-     Les emojis choisissent la photo affichée. -->
+<!-- Desktop : emojis, titre, texte et bouton à gauche, photo à droite.
+     Mobile : la colonne de gauche s'efface (contents) pour réordonner ses éléments autour de la photo :
+     titre, photo, emojis collés sous la photo, texte, bouton. Les emojis choisissent la photo affichée. -->
 <section
   aria-labelledby="presentation-titre"
-  class="mx-auto grid max-w-site gap-14 px-gutter pt-section lg:grid-cols-12 lg:items-center lg:gap-6"
+  class="mx-auto grid max-w-site px-gutter pt-section lg:grid-cols-12 lg:items-center lg:gap-6"
   data-gallery
 >
-  <div class="flex flex-col gap-6 lg:col-span-5">
-    <GalleryPicker />
-    <h2 id="presentation-titre" class="-mt-2 text-h2 font-medium">{fr.presentation.title}</h2>
-    <div class="flex max-w-prose flex-col gap-4 text-lead font-light text-muted">
+  <div class="flex flex-col gap-6 max-lg:contents lg:col-span-5">
+    <div class="max-lg:order-3 max-lg:mt-3">
+      <GalleryPicker />
+    </div>
+    <h2 id="presentation-titre" class="text-h2 font-medium max-lg:order-1 lg:-mt-2">{fr.presentation.title}</h2>
+    <div class="flex max-w-prose flex-col gap-4 text-lead font-light text-muted max-lg:order-4 max-lg:mt-4">
       {fr.presentation.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
     </div>
-    <div class="pt-2">
+    <div class="max-lg:order-5 max-lg:mt-6 lg:pt-2">
       <Button href="/a-propos/" variant="secondary">
         {fr.presentation.cta}
         <span aria-hidden="true">→</span>
@@ -26,7 +29,7 @@ import { fr } from '../../i18n/fr';
     </div>
   </div>
 
-  <div class="order-first lg:order-none lg:col-span-6 lg:col-start-7">
+  <div class="max-lg:order-2 max-lg:mt-6 lg:col-span-6 lg:col-start-7">
     <GalleryFrame />
   </div>
 </section>

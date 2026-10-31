@@ -11,12 +11,12 @@ const lastLight = lightWords.pop();
 ---
 
 <section data-hero class="relative mx-auto max-w-site px-gutter pt-5 md:pt-8">
-  <!-- Fond : quelques filets verticaux très clairs, qui s'effacent en haut et en bas.
-       De temps en temps, un trait violet descend le long de l'un d'eux. -->
-  <div class="hero-lines pointer-events-none absolute inset-x-0 top-0 -bottom-24 px-gutter" aria-hidden="true">
-    <div class="grid h-full grid-cols-2 md:grid-cols-4">
+  <!-- Fond : quelques filets verticaux très clairs (un seul sur mobile), qui commencent sous le menu
+       et s'effacent en haut et en bas. De temps en temps, un trait violet descend le long de l'un d'eux. -->
+  <div class="hero-lines pointer-events-none absolute inset-x-0 top-24 -bottom-24 px-gutter md:top-32" aria-hidden="true">
+    <div class="grid h-full grid-cols-2 md:grid-cols-5">
       {
-        [1, 2, 3].map((line) => (
+        [1, 2, 3, 4].map((line) => (
           <span class:list={['relative border-r border-line', line !== 1 && 'max-md:hidden']} data-hero-line>
             <span class="hero-spark" style={`--line: ${line}`} />
           </span>
@@ -27,7 +27,8 @@ const lastLight = lightWords.pop();
 
   <SiteHeader />
 
-  <div class="relative flex flex-col gap-8 pt-section md:gap-10">
+  <!-- Halo de la couleur du fond autour du texte : les filets s'effacent derrière les lettres. -->
+  <div class="hero-text relative flex flex-col gap-8 pt-section md:gap-10">
     <!-- Retrait de 0,05 em : la courbe du « C » laisse un blanc à gauche du glyphe. On le compense
          pour que le titre s'aligne à l'œil sur la photo et sur le drapeau. -->
     <h1 class="-ml-[0.05em] text-display">
@@ -65,7 +66,8 @@ const lastLight = lightWords.pop();
         </span>
       </span>
     </h1>
-    <div data-hero-time>
+    <!-- Décalé de 2 px : le drapeau, à bord droit, s'aligne sur la barre du « D » de la ligne au-dessus. -->
+    <div class="pl-0.5" data-hero-time>
       <LocalInfo />
     </div>
   </div>
@@ -73,16 +75,27 @@ const lastLight = lightWords.pop();
 
 <style>
   /* Chaque mot glisse depuis le bas à l'intérieur d'un cache. Le cache déborde un peu
-     en haut et en bas pour ne couper ni les accents ni les jambages (g, p, q). */
+     en haut et en bas pour ne couper ni les accents ni les jambages (g, p, q).
+     Il ne coupe que pendant l'animation d'entrée (data-intro), pour laisser ensuite le halo déborder. */
   .word-mask {
     display: inline-block;
-    overflow: hidden;
     vertical-align: top;
     padding-block: 0.1em 0.16em;
     margin-block: -0.1em -0.16em;
   }
   .word {
     display: inline-block;
+  }
+  [data-intro] .word-mask {
+    overflow: hidden;
+  }
+
+  .hero-text {
+    text-shadow:
+      0 0 0.15em var(--color-page),
+      0 0 0.3em var(--color-page),
+      0 0 0.5em var(--color-page),
+      0 0 0.8em var(--color-page);
   }
 
   /* Les filets s'effacent vers le haut et vers le bas de la zone. */
@@ -100,7 +113,7 @@ const lastLight = lightWords.pop();
     background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
     opacity: 0;
     animation: hero-spark 10s var(--ease-in-out) infinite;
-    animation-delay: calc(var(--line) * 3s - 1s);
+    animation-delay: calc(var(--line) * 2.5s - 1s);
   }
   @keyframes hero-spark {
     0% {
@@ -160,7 +173,12 @@ const lastLight = lightWords.pop();
       const heroLines = hero.querySelectorAll('[data-hero-line]');
 
       // La séquence attend la fin de l'écran de chargement pour démarrer.
-      const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+      const tl = gsap.timeline({
+        paused: true,
+        defaults: { ease: 'expo.out' },
+        onComplete: () => hero.removeAttribute('data-intro'),
+      });
+      hero.setAttribute('data-intro', '');
 
       // 0. Les filets du fond se tracent de haut en bas.
       tl.from(heroLines, { scaleY: 0, transformOrigin: 'top', duration: 1.8, stagger: 0.12, ease: 'expo.inOut' }, 0);

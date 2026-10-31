@@ -1,6 +1,7 @@
 ---
 import logo from '../../assets/logo.svg?raw';
 import Button from '../ui/Button.astro';
+import ContactCard from '../ContactCard.astro';
 import Icon from '../ui/Icon.astro';
 import LocalInfo from '../LocalInfo.astro';
 import ProfilePhoto from '../ProfilePhoto.astro';
@@ -17,8 +18,9 @@ const links = [
   { label: fr.nav.contact, href: `mailto:${site.email}`, current: false },
 ];
 
-// Le menu mobile ajoute l'accueil en tête.
-const mobileLinks = [{ label: fr.nav.home, href: '/', current: path === '/' }, ...links];
+// Le menu mobile ajoute l'accueil en tête. Le contact n'y est pas un lien : c'est la carte
+// cliquable du bloc contact, posée en bas du menu.
+const mobileLinks = [{ label: fr.nav.home, href: '/', current: path === '/' }, ...links.slice(0, -1)];
 
 const dot = 'size-1.5 shrink-0 rounded-full bg-accent';
 ---
@@ -98,7 +100,8 @@ const dot = 'size-1.5 shrink-0 rounded-full bg-accent';
 </div>
 
 <!-- Menu mobile déplié : plein écran. À l'ouverture, le logo se compose comme sur l'écran
-     de chargement, les liens montent un par un, puis les infos de Toulouse arrivent du bas. -->
+     de chargement, les liens montent un par un, puis la carte contact et les infos de Toulouse
+     arrivent du bas. -->
 <dialog
   id="mobile-menu"
   aria-label={fr.nav.label}
@@ -140,8 +143,9 @@ const dot = 'size-1.5 shrink-0 rounded-full bg-accent';
       </ul>
     </nav>
 
-    <div class="mt-auto px-4" data-menu-info>
-      <LocalInfo />
+    <div class="mt-auto flex flex-col gap-8" data-menu-info>
+      <ContactCard />
+      <LocalInfo class="px-4" />
     </div>
   </div>
 </dialog>
@@ -201,7 +205,7 @@ const dot = 'size-1.5 shrink-0 rounded-full bg-accent';
         { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.07 },
         0.1,
       )
-      // Les infos de Toulouse arrivent en dernier, depuis le bas de l'écran.
+      // La carte contact et les infos de Toulouse arrivent en dernier, depuis le bas de l'écran.
       .fromTo(
         dialog.querySelector('[data-menu-info]'),
         { y: 64, autoAlpha: 0 },
