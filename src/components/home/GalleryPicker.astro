@@ -1,0 +1,59 @@
+---
+/*
+ * Sélecteur de la galerie « Derrière l'écran » : un emoji par photo.
+ * Au survol (souris) ou au clic, la photo correspondante s'affiche. L'emoji de la photo en cours
+ * est marqué d'un point violet en dessous, comme la page active dans le menu ; les autres sont atténués.
+ */
+import Icon from '../ui/Icon.astro';
+import { fr } from '../../i18n/fr';
+---
+
+<ul class="flex gap-3 pb-3" aria-label={fr.presentation.gallery}>
+  {
+    fr.presentation.photos.map((item, index) => (
+      <li>
+        <button
+          type="button"
+          class="gallery-pick relative grid size-14 place-items-center rounded-control bg-surface"
+          aria-label={fr.presentation.showPhoto(item.label)}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+          data-pick={index}
+        >
+          <Icon name={`emoji:${item.emoji}`} class="size-8" />
+        </button>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .gallery-pick {
+    opacity: 0.45;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .gallery-pick:hover,
+  .gallery-pick[aria-pressed='true'] {
+    opacity: 1;
+  }
+  /* Point violet sous l'emoji de la photo en cours. */
+  .gallery-pick::after {
+    content: '';
+    position: absolute;
+    bottom: -0.75rem;
+    left: 50%;
+    width: 0.375rem;
+    height: 0.375rem;
+    translate: -50% 0;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    scale: 0;
+    transition: scale var(--duration-fast) var(--ease-out);
+  }
+  .gallery-pick[aria-pressed='true']::after {
+    scale: 1;
+  }
+</style>
+
+<script>
+  import '../../lib/photo-gallery';
+</script>

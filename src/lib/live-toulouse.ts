@@ -52,7 +52,7 @@ function render() {
   });
 
   const online = isOnline();
-  document.querySelectorAll<HTMLElement>('[data-status]').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('[data-status]:not([data-status-fixed])').forEach((el) => {
     el.dataset.status = online ? 'online' : 'offline';
     el.setAttribute('aria-label', online ? fr.status.online : fr.status.offline);
     el.title = online ? fr.status.online : fr.status.offline;

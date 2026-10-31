@@ -53,20 +53,27 @@ export const fr = {
       'Je passe du design au code, puis aux campagnes et aux automatisations. Ce qui relie tout ça : de la rigueur, et l’envie d’apprendre ce que je ne sais pas encore faire.',
     ],
     cta: 'En savoir plus sur moi',
-    collage: {
-      toulouse: 'Photo de Toulouse',
-      album: 'Pochette d’album',
-      book: 'Couverture de livre',
-      poster: 'Affiche de film',
-      mountain: 'Photo de montagne',
-    },
+    // Photos de la galerie, dans l'ordre des fichiers : légende (lue par les lecteurs d'écran)
+    // et emoji du sélecteur (nom Fluent Emoji, voir https://icon-sets.iconify.design/fluent-emoji-flat/).
+    photos: [
+      { label: 'En montagne', emoji: 'snow-capped-mountain' },
+      { label: 'Toulouse', emoji: 'cityscape' },
+      { label: 'À la mer', emoji: 'water-wave' },
+      { label: 'Au stade, avec le Stade Toulousain', emoji: 'rugby-football' },
+    ],
+    gallery: 'Photos personnelles',
+    showPhoto: (label: string) => `Afficher la photo : ${label}`,
   },
   about: {
     metaTitle: 'À propos',
-    title: 'Enchanté, moi c’est Dorian.',
+    // Titre en deux temps, comme l'accroche de l'accueil : une affirmation, puis la suite plus légère.
+    titleStrong: 'Comprendre comment ça fonctionne.',
+    titleLight: 'Puis l’améliorer.',
     intro: [
-      'Je vis et je travaille à Toulouse. Depuis mon DUT, je passe d’un métier du digital à l’autre : graphisme, sites web, communication, puis acquisition.',
-      'Ce qui m’anime : comprendre comment les choses fonctionnent, et apprendre ce que je ne sais pas encore faire.',
+      'Je m’appelle Dorian Lala-Clement, je vis et je travaille à Toulouse. Je suis responsable marketing numérique chez SawUp, une école en ligne de production musicale, où je suis arrivé en alternance en 2021.',
+      'Ce qui m’anime, c’est de comprendre comment les choses fonctionnent, puis de les améliorer : l’expérience d’un utilisateur sur un site, un processus interne trop lourd, la façon dont une information circule dans une équipe.',
+      'C’est ce qui m’a fait passer du graphisme au web, puis à l’acquisition et à l’automatisation. En parallèle, je mène des missions en freelance depuis 2020 : identités visuelles, supports de communication, sites web.',
+      'Et je continue d’apprendre, par curiosité autant que par méthode.',
     ],
     photoLabel: 'Photo en grand format',
     experience: {
@@ -103,7 +110,7 @@ export const fr = {
     titleLight: 'Parlons-en.',
     text: 'Une idée, une question, une mission : écrivez-moi.',
     emailLabel: 'M’écrire à',
-    responseTime: 'Réponse sous 48 h',
+    responseTime: 'Réponse sous 48 heures',
   },
   footer: {
     label: 'Pied de page',

@@ -5,9 +5,20 @@ import { fr } from '../i18n/fr';
 
 interface Props {
   class?: string;
+  /** Fond du voyant, pour qu'il se découpe dans la couleur du fond sur lequel la photo est posée. */
+  badgeClass?: string;
+  /** Couleur du point vert, à éclaircir sur un fond foncé. */
+  dotClass?: string;
+  /** Toujours « en ligne », quelle que soit l'heure (appel à écrire). */
+  alwaysOnline?: boolean;
 }
 
-const { class: className } = Astro.props;
+const {
+  class: className,
+  badgeClass = 'bg-page text-muted',
+  dotClass = 'bg-online',
+  alwaysOnline = false,
+} = Astro.props;
 ---
 
 <div class:list={['relative shrink-0', className]}>
@@ -24,15 +35,17 @@ const { class: className } = Astro.props;
     />
   </div>
 
-  <!-- Voyant de statut : vert entre 8 h et 19 h (heure de Toulouse), lune sinon. -->
+  <!-- Voyant de statut : vert entre 8 h et 19 h (heure de Toulouse), lune sinon ; ou toujours vert. -->
   <span
-    data-status="unknown"
+    data-status={alwaysOnline ? 'online' : 'unknown'}
+    data-status-fixed={alwaysOnline ? '' : undefined}
     role="img"
-    class="status absolute -right-1 -bottom-1 grid size-5 place-items-center rounded-full bg-page"
+    aria-label={alwaysOnline ? fr.status.online : undefined}
+    class:list={['status absolute -right-1 -bottom-1 grid size-5 place-items-center rounded-full', badgeClass]}
   >
-    <span class="status-dot size-2.5 rounded-full bg-online"></span>
+    <span class:list={['status-dot size-2.5 rounded-full', dotClass]}></span>
     <svg
-      class="status-moon size-3 text-muted"
+      class="status-moon size-3"
       viewBox="0 0 24 24"
       fill="currentColor"
       aria-hidden="true"

@@ -36,6 +36,8 @@
 
   /* Voyant « en ligne » du hero. */
   --color-online: #1f8a55;
+  /* Version plus vive, pour un fond foncé (carte contact). */
+  --color-online-bright: #3ee07f;
 
   /* Rôles sémantiques : les composants n'utilisent que ceux-ci.
      Le futur mode sombre n'aura qu'à les redéfinir. */
@@ -51,6 +53,7 @@
   /* Bloc gris foncé (section contact). */
   --color-night: var(--color-neutral-800);
   --color-night-surface: var(--color-neutral-700);
+  --color-night-surface-hover: #44444a;
   --color-night-muted: var(--color-neutral-350);
   --color-on-night: var(--color-neutral-50);
 
@@ -96,7 +99,6 @@
   --container-*: initial;
   --container-prose: 40rem; /* largeur de lecture ≈ 65 caractères */
   --container-site: 82rem; /* 1312 px de contenu max */
-  --container-fan: 64rem; /* éventail de visuels de la présentation */
 
   /* ---------- Rayons ---------- */
   --radius-*: initial;

@@ -25,7 +25,10 @@ import { fr } from '../i18n/fr';
         <Placeholder label={fr.about.photoLabel} ratio="4 / 5" />
       </div>
       <div class="flex flex-col gap-6 md:col-span-6 md:col-start-7">
-        <h1 class="text-h1 font-medium">{fr.about.title}</h1>
+        <h1 class="text-h1">
+          <span class="block font-medium">{fr.about.titleStrong}</span>
+          <span class="block font-light text-muted">{fr.about.titleLight}</span>
+        </h1>
         <div class="flex max-w-prose flex-col gap-4 text-lead font-light text-muted">
           {fr.about.intro.map((paragraph) => <p>{paragraph}</p>)}
         </div>

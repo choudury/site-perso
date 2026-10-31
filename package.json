@@ -17,6 +17,7 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@iconify-json/fluent-emoji-flat": "^1.2.6",
     "@iconify-json/logos": "^1.2.18",
     "@iconify-json/lucide": "^1.2.149",
     "@iconify-json/simple-icons": "^1.2.101",

@@ -1,9 +1,11 @@
 ---
 /*
- * Icône d'interface (bibliothèque Lucide), insérée dans la page au moment du build.
- * Elle prend la couleur du texte qui l'entoure.
+ * Icône insérée dans la page au moment du build.
+ * Par défaut, une icône d'interface Lucide, qui prend la couleur du texte qui l'entoure.
+ * Avec le préfixe « emoji: », un emoji en couleurs (Fluent Emoji), identique sur tous les appareils.
  */
 import { getIconData, iconToSVG } from '@iconify/utils';
+import emoji from '@iconify-json/fluent-emoji-flat/icons.json';
 import lucide from '@iconify-json/lucide/icons.json';
 
 interface Props {
@@ -16,7 +18,7 @@ interface Props {
 
 const { name, class: className, label, ...rest } = Astro.props;
 
-const data = getIconData(lucide, name);
+const data = name.startsWith('emoji:') ? getIconData(emoji, name.slice(6)) : getIconData(lucide, name);
 if (!data) throw new Error(`Icône introuvable : ${name}`);
 const { body, attributes } = iconToSVG(data);
 ---

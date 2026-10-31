@@ -1,0 +1,62 @@
+---
+/*
+ * Grande photo de la section « Derrière l'écran ». Les photos se relaient en fondu ;
+ * le sélecteur d'emojis (GalleryPicker), placé au-dessus du titre, choisit celle qui s'affiche.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Placeholder from '../ui/Placeholder.astro';
+import { fr } from '../../i18n/fr';
+
+// Les photos sont à déposer dans src/assets/derriere-ecran/, dans l'ordre (01-…, 02-…) ;
+// leurs légendes et emojis sont dans fr.presentation.photos, dans le même ordre.
+const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/derriere-ecran/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const photos = Object.keys(files)
+  .sort()
+  .map((path) => files[path].default);
+const items = fr.presentation.photos;
+const RATIO = '5 / 4';
+---
+
+<div
+  class="relative overflow-hidden rounded-card"
+  style={`aspect-ratio: ${RATIO}`}
+  role="group"
+  aria-label={fr.presentation.gallery}
+>
+  {
+    items.map((item, index) => (
+      <div class="gallery-slide absolute inset-0" data-slide={index} data-active={index === 0 ? '' : undefined}>
+        {photos[index] ? (
+          <Image
+            src={photos[index]}
+            alt={item.label}
+            widths={[640, 960, 1400]}
+            sizes="(min-width: 64rem) 45vw, 90vw"
+            loading={index === 0 ? 'eager' : 'lazy'}
+            class="size-full object-cover"
+          />
+        ) : (
+          <Placeholder label={item.label} ratio={RATIO} class="size-full rounded-none" />
+        )}
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  /* Une seule photo visible ; la suivante apparaît en fondu. */
+  .gallery-slide {
+    opacity: 0;
+    transition: opacity var(--duration-slow) var(--ease-in-out);
+  }
+  .gallery-slide[data-active] {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  import '../../lib/photo-gallery';
+</script>

@@ -24,9 +24,14 @@ import { fr } from '../i18n/fr';
     <a
       href={`mailto:${site.email}`}
       aria-label={`${fr.contact.emailLabel} ${site.email}`}
-      class="group flex w-full max-w-prose items-center gap-3 rounded-card bg-night-surface p-2 pr-4 transition-colors duration-(--duration-base) ease-out hover:bg-neutral-600/40 sm:gap-5 sm:p-3 sm:pr-6"
+      class="group flex w-full max-w-prose items-center gap-3 rounded-card bg-night-surface p-2 pr-4 transition-colors duration-(--duration-base) ease-out hover:bg-night-surface-hover sm:gap-5 sm:p-3 sm:pr-6"
     >
-      <ProfilePhoto class="size-12 sm:size-16" />
+      <ProfilePhoto
+        class="size-12 sm:size-16"
+        alwaysOnline
+        dotClass="bg-online-bright"
+        badgeClass="bg-night-surface text-night-muted transition-colors duration-(--duration-base) ease-out group-hover:bg-night-surface-hover"
+      />
       <span class="flex min-w-0 flex-1 flex-col">
         <span class="truncate text-body font-medium sm:text-lead">{site.email}</span>
         <span class="text-small text-night-muted">{fr.contact.responseTime}</span>
