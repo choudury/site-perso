@@ -1,6 +1,7 @@
 ---
 import '@fontsource-variable/geist';
 import '../styles/global.css';
+import Preloader from '../components/Preloader.astro';
 
 interface Props {
   title: string;
@@ -17,17 +18,27 @@ const { title, description = '', noindex = false } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <!-- Signale que JavaScript est actif (les animations peuvent masquer leurs éléments de départ),
-         avec une sécurité qui réaffiche tout si les scripts n'ont pas pris la main en 2,5 s. -->
+    <!-- Signale que JavaScript est actif (les animations peuvent masquer leurs éléments de départ).
+         L'écran de chargement est sauté s'il a déjà été vu pendant la visite ou si le visiteur demande
+         moins d'animations. Sécurité : tout s'affiche si les scripts n'ont pas pris la main en 4 s. -->
     <script is:inline>
-      document.documentElement.classList.add('js');
-      setTimeout(() => document.documentElement.classList.add('js-failsafe'), 2500);
+      {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let seen = false;
+        try {
+          seen = sessionStorage.getItem('preload-vu') === '1';
+        } catch {}
+        if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('no-preload');
+        setTimeout(() => root.classList.add('js-failsafe'), 4000);
+      }
     </script>
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
   </head>
   <!-- Le pied de page reste en bas de l'écran même sur une page courte. -->
   <body class="flex min-h-svh flex-col">
+    <Preloader />
     <slot />
   </body>
 </html>

@@ -71,7 +71,7 @@ const lastLight = lightWords.pop();
 
   /* Tant que l'animation n'est pas prête, le hero reste masqué pour éviter un flash.
      Sécurités : rien n'est masqué sans JavaScript, ni quand le visiteur demande
-     moins d'animations, ni au-delà de 2,5 s si le script tarde (classe js-failsafe). */
+     moins d’animations, ni au-delà de 4 s si le script tarde (classe js-failsafe). */
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js:not(.js-failsafe)) [data-hero] {
       visibility: hidden;
@@ -81,6 +81,7 @@ const lastLight = lightWords.pop();
 
 <script>
   import { gsap } from 'gsap';
+  import { preloadDone } from '../../lib/preload';
 
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   const root = document.documentElement;
@@ -97,7 +98,8 @@ const lastLight = lightWords.pop();
       const time = hero.querySelector('[data-hero-time]');
       const ink = getComputedStyle(hero).color;
 
-      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      // La séquence attend la fin de l'écran de chargement pour démarrer.
+      const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
 
       // 1. L'en-tête descend légèrement en fondu.
       tl.from(header, { y: -10, autoAlpha: 0, duration: 0.9, stagger: 0.06 }, 0);
@@ -114,6 +116,7 @@ const lastLight = lightWords.pop();
 
       // Les états de départ sont posés : le hero peut devenir visible.
       gsap.set(hero, { visibility: 'visible' });
+      preloadDone.then(() => tl.play());
     });
   }
 </script>

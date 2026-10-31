@@ -19,7 +19,8 @@ const path = '/' + (process.argv[2] ?? '').replace(/^\/+/, '');
 const base = process.env.CAPTURE_BASE ?? 'http://localhost:4321';
 const edge =
   process.env.EDGE_PATH ?? 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
-const port = 9333;
+// Port tiré au hasard : évite de se brancher sur un Edge de test resté ouvert.
+const port = 9333 + Math.floor(Math.random() * 500);
 const clickIndex = process.argv.indexOf('--click');
 const clickSelector = clickIndex > -1 ? process.argv[clickIndex + 1] : null;
 
@@ -77,6 +78,10 @@ const slug =
 
 try {
   await send('Page.enable');
+  // Mode « animations réduites » : pas d'écran de chargement, la page est capturée dans son état final.
+  await send('Emulation.setEmulatedMedia', {
+    features: [{ name: 'prefers-reduced-motion', value: 'reduce' }],
+  });
   for (const vp of viewports) {
     await send('Emulation.setDeviceMetricsOverride', {
       width: vp.width,

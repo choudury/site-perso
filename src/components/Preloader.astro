@@ -1,0 +1,69 @@
+---
+/*
+ * Écran de chargement : fond gris, le logo se compose en quatre temps.
+ * Affiché une seule fois par visite (mémoire de session), jamais quand le visiteur
+ * demande moins d'animations, ni sans JavaScript (voir le script en tête de BaseLayout).
+ */
+import logo from '../assets/logo.svg?raw';
+---
+
+<div class="preloader fixed inset-0 z-50 place-items-center bg-surface text-ink" data-preloader aria-hidden="true">
+  <div class="size-16 md:size-20" set:html={logo} />
+</div>
+
+<style>
+  .preloader {
+    display: none;
+  }
+  /* Pas de défilement tant que l'écran de chargement est là. */
+  :global(html.js:not(.no-preload):not(.js-failsafe):has([data-preloader])) {
+    overflow: hidden;
+  }
+  :global(html.js:not(.no-preload):not(.js-failsafe)) .preloader {
+    display: grid;
+  }
+  .preloader :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  /* Les formes restent invisibles jusqu'à ce que l'animation les fasse apparaître. */
+  .preloader :global(path) {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { finishPreload } from '../lib/preload';
+
+  const preloader = document.querySelector<HTMLElement>('[data-preloader]');
+  const root = document.documentElement;
+
+  if (!preloader || root.classList.contains('no-preload') || root.classList.contains('js-failsafe')) {
+    preloader?.remove();
+    finishPreload();
+  } else {
+    try {
+      sessionStorage.setItem('preload-vu', '1');
+    } catch {}
+
+    // Ordre des formes dans le fichier SVG : bas gauche, haut gauche, haut droite, bas droite.
+    // Ordre d'apparition voulu : haut gauche, bas droite, haut droite, bas gauche.
+    const [bottomLeft, topLeft, topRight, bottomRight] = preloader.querySelectorAll('path');
+    const shapes = [topLeft, bottomRight, topRight, bottomLeft];
+
+    gsap
+      .timeline({
+        delay: 0.15,
+        onComplete: () => preloader.remove(),
+      })
+      .fromTo(
+        shapes,
+        { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' },
+        { opacity: 1, scale: 1, duration: 0.7, ease: 'expo.out', stagger: 0.16 },
+      )
+      // Le hero commence à s'animer pendant que l'écran de chargement s'efface.
+      .add(finishPreload, '+=0.25')
+      .to(preloader, { autoAlpha: 0, duration: 0.6, ease: 'power2.inOut' }, '<');
+  }
+</script>

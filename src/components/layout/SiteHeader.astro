@@ -50,6 +50,45 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
   </Button>
 </header>
 
+<!-- Nav compacte : cachée en haut de page, ses boutons redescendent un par un quand on remonte
+     la page, et repartent quand on la redescend. Pas de barre de fond : seuls les boutons,
+     placés comme ceux de l'en-tête, en verre dépoli pour rester visibles au-dessus du contenu. -->
+<div
+  class="sticky-nav pointer-events-none fixed inset-x-0 top-0 z-40 pt-5 md:pt-8"
+  data-sticky-nav
+  data-visible="false"
+  inert
+>
+  <!-- Même hauteur de ligne que l'en-tête (photo de 48 / 56 px) pour que les boutons tombent au même endroit. -->
+  <div class="mx-auto flex h-12 max-w-site items-center justify-end px-gutter md:h-14">
+    <nav aria-label={fr.nav.label} class="hidden md:block">
+      <ul class="flex items-center gap-2">
+        {
+          links.map((link, index) => (
+            <li class="sticky-item" style={`--i: ${index}`}>
+              <Button href={link.href} variant="glass">
+                {link.label}
+              </Button>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <Button
+      variant="glass"
+      class="sticky-item md:hidden"
+      style="--i: 0"
+      aria-haspopup="dialog"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+      data-menu-open
+    >
+      <Icon name="plus" class="size-4" />
+      {fr.nav.open}
+    </Button>
+  </div>
+</div>
+
 <!-- Menu mobile déplié : plein écran, avec le logo. -->
 <dialog
   id="mobile-menu"
@@ -84,20 +123,78 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
   </div>
 </dialog>
 
+<!-- Styles globaux : la classe sticky-item est aussi posée sur le composant Button,
+     que les styles limités à ce fichier n'atteindraient pas. -->
+<style is:global>
+  /* Cachés, les éléments sont remontés hors de l'écran. À l'apparition, ils redescendent
+     l'un après l'autre (décalage de 70 ms, --i donne leur rang) ; ils repartent ensemble. */
+  .sticky-nav {
+    visibility: hidden;
+    transition: visibility 0s linear var(--duration-base);
+  }
+  .sticky-nav[data-visible='true'] {
+    visibility: visible;
+    transition: none;
+  }
+  .sticky-item {
+    pointer-events: auto;
+    translate: 0 -160%;
+    opacity: 0;
+    transition:
+      translate var(--duration-base) var(--ease-out),
+      opacity var(--duration-base) var(--ease-out);
+  }
+  .sticky-nav[data-visible='true'] .sticky-item {
+    translate: 0 0;
+    opacity: 1;
+    transition-duration: var(--duration-slow);
+    transition-delay: calc(var(--i) * 70ms);
+  }
+</style>
+
 <script>
   const dialog = document.querySelector<HTMLDialogElement>('#mobile-menu');
-  const openButton = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const openButtons = document.querySelectorAll<HTMLButtonElement>('[data-menu-open]');
 
   // showModal() rend le reste de la page inactif, piège le focus clavier dans le menu
   // et ferme le menu avec la touche Échap.
-  openButton?.addEventListener('click', () => {
-    dialog?.showModal();
-    openButton.setAttribute('aria-expanded', 'true');
-  });
+  openButtons.forEach((button) =>
+    button.addEventListener('click', () => {
+      dialog?.showModal();
+      button.setAttribute('aria-expanded', 'true');
+    }),
+  );
 
-  dialog?.addEventListener('close', () => openButton?.setAttribute('aria-expanded', 'false'));
+  dialog?.addEventListener('close', () =>
+    openButtons.forEach((button) => button.setAttribute('aria-expanded', 'false')),
+  );
 
   dialog?.querySelectorAll('[data-menu-close], [data-menu-link]').forEach((el) => {
     el.addEventListener('click', () => dialog.close());
   });
+
+  // Nav compacte : visible quand on remonte, au-delà de la hauteur de l'en-tête.
+  const stickyNav = document.querySelector<HTMLElement>('[data-sticky-nav]');
+  const header = document.querySelector('header');
+  let lastY = scrollY;
+
+  function setVisible(visible: boolean) {
+    if (!stickyNav || (stickyNav.dataset.visible === 'true') === visible) return;
+    stickyNav.dataset.visible = String(visible);
+    // Cachée, elle n'est ni lue par les lecteurs d'écran ni atteignable au clavier.
+    stickyNav.inert = !visible;
+  }
+
+  addEventListener(
+    'scroll',
+    () => {
+      const y = scrollY;
+      const pastHeader = y > (header?.getBoundingClientRect().height ?? 0) + 80;
+      // Petit seuil pour ignorer les micro-mouvements du doigt ou du pavé tactile.
+      if (Math.abs(y - lastY) < 6) return;
+      setVisible(pastHeader && y < lastY);
+      lastY = y;
+    },
+    { passive: true },
+  );
 </script>

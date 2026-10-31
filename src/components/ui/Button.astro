@@ -2,7 +2,8 @@
 import type { HTMLAttributes } from 'astro/types';
 
 type Props = {
-  variant?: 'primary' | 'secondary';
+  /** glass : fond gris translucide et flou, pour un bouton posé au-dessus du contenu. */
+  variant?: 'primary' | 'secondary' | 'glass';
   href?: string;
 } & HTMLAttributes<'a'> & HTMLAttributes<'button'>;
 
@@ -11,6 +12,7 @@ const { variant = 'primary', href, class: className, ...rest } = Astro.props;
 const variants = {
   primary: 'bg-accent text-on-accent hover:bg-accent-strong',
   secondary: 'bg-surface text-ink hover:bg-surface-hover',
+  glass: 'bg-surface-hover/75 text-ink backdrop-blur-lg hover:bg-surface-hover',
 };
 
 const classes = [
