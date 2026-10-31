@@ -11,9 +11,10 @@ interface Props {
   name: string;
   icon?: string;
   color?: string;
+  class?: string;
 }
 
-const { name, icon, color } = Astro.props;
+const { name, icon, color, class: className } = Astro.props;
 
 const sets = { logos, 'simple-icons': simpleIcons } as const;
 
@@ -27,7 +28,7 @@ if (icon) {
 }
 ---
 
-<li class="flex flex-col items-center gap-2.5 text-center sm:w-20">
+<li class:list={['flex flex-col items-center gap-2.5 text-center', className]}>
   <span
     class:list={[
       'grid size-14 place-items-center rounded-control sm:size-16',

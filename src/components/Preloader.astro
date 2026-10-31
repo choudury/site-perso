@@ -34,6 +34,7 @@ import logo from '../assets/logo.svg?raw';
 
 <script>
   import { gsap } from 'gsap';
+  import { logoReveal } from '../lib/logo-reveal';
   import { finishPreload } from '../lib/preload';
 
   const preloader = document.querySelector<HTMLElement>('[data-preloader]');
@@ -47,21 +48,12 @@ import logo from '../assets/logo.svg?raw';
       sessionStorage.setItem('preload-vu', '1');
     } catch {}
 
-    // Ordre des formes dans le fichier SVG : bas gauche, haut gauche, haut droite, bas droite.
-    // Ordre d'apparition voulu : haut gauche, bas droite, haut droite, bas gauche.
-    const [bottomLeft, topLeft, topRight, bottomRight] = preloader.querySelectorAll('path');
-    const shapes = [topLeft, bottomRight, topRight, bottomLeft];
-
     gsap
       .timeline({
         delay: 0.15,
         onComplete: () => preloader.remove(),
       })
-      .fromTo(
-        shapes,
-        { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' },
-        { opacity: 1, scale: 1, duration: 0.7, ease: 'expo.out', stagger: 0.16 },
-      )
+      .add(logoReveal(preloader))
       // Le hero commence à s'animer pendant que l'écran de chargement s'efface.
       .add(finishPreload, '+=0.25')
       .to(preloader, { autoAlpha: 0, duration: 0.6, ease: 'power2.inOut' }, '<');

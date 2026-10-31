@@ -1,26 +1,60 @@
 ---
-/* Appel à écrire, avec l'adresse mail en grand. Réutilisé en bas de l'accueil et de la page À propos. */
+/*
+ * Appel à écrire, en bloc gris foncé pour marquer la fin de page.
+ * Carte cliquable avec la photo, l'adresse mail et une flèche. Réutilisé sur l'accueil et la page À propos.
+ * Au défilement, le bloc remonte de sous le pied de page jusqu'à sa place.
+ */
+import Icon from './ui/Icon.astro';
+import ProfilePhoto from './ProfilePhoto.astro';
 import { site } from '../config/site';
 import { fr } from '../i18n/fr';
 ---
 
-<section aria-labelledby="contact-titre" class="mx-auto max-w-site px-gutter py-section">
-  <h2 id="contact-titre" class="max-w-prose text-h2 font-medium">{fr.contact.title}</h2>
-  <a
-    href={`mailto:${site.email}`}
-    aria-label={`${fr.contact.emailLabel} ${site.email}`}
-    class="group mt-6 inline-flex max-w-full items-baseline gap-3 text-h2 font-light break-words text-accent md:mt-8 md:text-h1"
-  >
-    <span
-      class="underline decoration-accent/25 decoration-1 underline-offset-4 transition-colors duration-(--duration-fast) ease-out group-hover:decoration-accent"
+<section aria-labelledby="contact-titre" class="mx-auto w-full max-w-site px-gutter pt-section pb-6 md:pb-10" data-contact>
+  <div class="flex flex-col gap-10 rounded-card bg-night p-5 text-on-night sm:p-10 md:gap-14 lg:p-16" data-contact-card>
+    <div class="flex flex-col gap-6">
+      <p class="text-small font-medium text-night-muted">{fr.contact.label}</p>
+      <h2 id="contact-titre" class="text-h1">
+        <span class="block font-medium">{fr.contact.titleStrong}</span>
+        <span class="block font-light text-night-muted">{fr.contact.titleLight}</span>
+      </h2>
+      <p class="max-w-prose text-lead font-light text-night-muted">{fr.contact.text}</p>
+    </div>
+
+    <a
+      href={`mailto:${site.email}`}
+      aria-label={`${fr.contact.emailLabel} ${site.email}`}
+      class="group flex w-full max-w-prose items-center gap-3 rounded-card bg-night-surface p-2 pr-4 transition-colors duration-(--duration-base) ease-out hover:bg-neutral-600/40 sm:gap-5 sm:p-3 sm:pr-6"
     >
-      {site.email}
-    </span>
-    <span
-      aria-hidden="true"
-      class="transition-transform duration-(--duration-fast) ease-out group-hover:translate-x-1"
-    >
-      →
-    </span>
-  </a>
+      <ProfilePhoto class="size-12 sm:size-16" />
+      <span class="flex min-w-0 flex-1 flex-col">
+        <span class="truncate text-body font-medium sm:text-lead">{site.email}</span>
+        <span class="text-small text-night-muted">{fr.contact.responseTime}</span>
+      </span>
+      <Icon
+        name="arrow-right"
+        class="size-5 shrink-0 sm:size-6 transition-transform duration-(--duration-fast) ease-out group-hover:translate-x-1"
+      />
+    </a>
+  </div>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Le bloc part plus bas, caché sous le pied de page, et remonte à sa place au fil du défilement.
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.fromTo(
+      '[data-contact-card]',
+      { y: 180 },
+      {
+        y: 0,
+        ease: 'none',
+        scrollTrigger: { trigger: '[data-contact]', start: 'top bottom', end: 'bottom bottom', scrub: 0.6 },
+      },
+    );
+  });
+</script>

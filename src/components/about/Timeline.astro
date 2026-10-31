@@ -1,0 +1,44 @@
+---
+/* Parcours professionnel en frise chronologique : un point par poste, reliés par un filet fin. */
+import { getCollection } from 'astro:content';
+import Tag from '../ui/Tag.astro';
+import { fr } from '../../i18n/fr';
+
+const experiences = (await getCollection('experiences')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section aria-labelledby="parcours-titre" class="mx-auto w-full max-w-site px-gutter pt-section">
+  <h2 id="parcours-titre" class="text-h2 font-medium">{fr.about.experience.title}</h2>
+
+  <ol class="mt-10 md:mt-14">
+    {
+      experiences.map(({ data }, index) => (
+        <li class="grid grid-cols-[1.5rem_1fr] gap-x-4 md:grid-cols-[12rem_1.5rem_1fr] md:gap-x-8">
+          {/* Dates : à gauche sur desktop, au-dessus du poste sur mobile. */}
+          <p class="col-start-2 text-small font-medium text-muted tabular-nums md:col-start-1 md:row-start-1 md:pt-1 md:text-right">
+            {data.start} — {data.end ?? fr.about.experience.today}
+          </p>
+
+          {/* Point et filet de la frise. */}
+          <div class="relative col-start-1 row-span-2 row-start-1 flex justify-center md:col-start-2">
+            <span
+              class:list={['relative z-1 mt-1.5 size-3 rounded-full', data.current ? 'bg-accent' : 'bg-neutral-300']}
+            />
+            {index < experiences.length - 1 && <span class="absolute top-6 bottom-0 w-px bg-line" />}
+          </div>
+
+          <div class="col-start-2 flex flex-col gap-2 pt-2 pb-12 md:col-start-3 md:row-start-1 md:pt-0 md:pb-16">
+            <h3 class="flex flex-wrap items-center gap-x-3 gap-y-2 text-h3 font-medium">
+              {data.role}
+              {data.current && <Tag tone="accent">{fr.about.experience.current}</Tag>}
+            </h3>
+            <p class="text-body font-medium">
+              {data.company} <span class="text-muted">· {data.contract}</span>
+            </p>
+            <p class="max-w-prose text-muted">{data.summary}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>

@@ -1,26 +1,158 @@
 ---
 import { getCollection } from 'astro:content';
+import Icon from '../ui/Icon.astro';
 import ToolIcon from '../ui/ToolIcon.astro';
 import { fr } from '../../i18n/fr';
 
 const groups = (await getCollection('competences')).sort((a, b) => a.data.order - b.data.order);
+
+// Une ligne d'outils : 4 sur mobile, 5 au-delà. Les outils suivants sont repliés derrière le bouton « + ».
+const MOBILE_ROW = 4;
+const DESKTOP_ROW = 5;
 ---
 
 <section aria-labelledby="competences-titre" class="mx-auto max-w-site px-gutter pt-section">
   <h2 id="competences-titre" class="text-h2 font-medium">{fr.skills.title}</h2>
 
-  <ul class="mt-10 grid gap-4 md:mt-14 md:grid-cols-2 md:gap-6">
+  <ul class="mt-10 grid items-start gap-4 md:mt-14 lg:grid-cols-2 lg:gap-6">
     {
-      groups.map(({ data }) => (
-        <li class="flex flex-col rounded-card bg-surface p-5 sm:p-8 lg:p-10">
-          <h3 class="text-h3 font-medium">{data.title}</h3>
-          <ul class="mt-6 -ml-1.5 grid grid-cols-4 gap-x-2 gap-y-6 sm:-ml-2 sm:flex sm:flex-wrap sm:gap-x-4" aria-label={fr.skills.tools}>
-            {data.tools.map((tool) => (
-              <ToolIcon {...tool} />
-            ))}
-          </ul>
-        </li>
-      ))
+      groups.map(({ id, data }) => {
+        const count = data.tools.length;
+        const foldable = count > MOBILE_ROW;
+        return (
+          <li
+            class:list={['tools-group flex flex-col rounded-card bg-surface p-5 sm:p-8 lg:p-10', foldable && 'is-foldable']}
+            data-tools-group={foldable ? '' : undefined}
+          >
+            <div class="flex items-center justify-between gap-4">
+              <h3 class="text-h3 font-medium">{data.title}</h3>
+              {foldable && (
+                <button
+                  type="button"
+                  class:list={[
+                    'grid size-9 shrink-0 place-items-center rounded-control bg-page text-ink transition-colors duration-(--duration-fast) ease-out hover:bg-surface-hover',
+                    // Sur desktop, la ligne contient 5 outils : pas de bouton s'il n'y en a que 5.
+                    count <= DESKTOP_ROW && 'sm:hidden',
+                  ]}
+                  aria-expanded="false"
+                  aria-controls={`outils-${id}`}
+                  aria-label={fr.skills.showAll(data.title)}
+                  data-tools-toggle
+                >
+                  <Icon name="plus" class="tools-plus size-4" />
+                  <Icon name="minus" class="tools-minus size-4" />
+                </button>
+              )}
+            </div>
+            <ul
+              id={`outils-${id}`}
+              class="mt-6 -ml-1.5 grid grid-cols-4 gap-x-2 gap-y-6 sm:-ml-2 sm:grid-cols-5 sm:gap-x-4"
+              aria-label={fr.skills.tools}
+            >
+              {data.tools.map((tool) => (
+                <ToolIcon {...tool} class="tool-item" />
+              ))}
+            </ul>
+          </li>
+        );
+      })
     }
   </ul>
 </section>
+
+<!-- Styles globaux : la classe tool-item est posée sur le composant ToolIcon. -->
+<style is:global>
+  /* Repliés, les groupes n'affichent que leur première ligne d'outils. */
+  .tools-group:not([data-expanded]) .tool-item:nth-child(n + 5) {
+    display: none;
+  }
+  @media (width >= 40rem) {
+    .tools-group:not([data-expanded]) .tool-item:nth-child(n + 5) {
+      display: flex;
+    }
+    .tools-group:not([data-expanded]) .tool-item:nth-child(n + 6) {
+      display: none;
+    }
+  }
+  .tools-group.is-foldable {
+    cursor: pointer;
+  }
+  .tools-group .tools-minus,
+  .tools-group[data-expanded] .tools-plus {
+    display: none;
+  }
+  .tools-group[data-expanded] .tools-minus {
+    display: block;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const desktopRow = matchMedia('(width >= 40rem)');
+
+  // Un clic n'importe où sur le groupe (ou sur le bouton « + ») le déplie ou le replie :
+  // la hauteur de la liste s'anime, et les outils supplémentaires apparaissent un par un.
+  document.querySelectorAll<HTMLElement>('[data-tools-group]').forEach((group) => {
+    const toggle = group.querySelector<HTMLButtonElement>('[data-tools-toggle]')!;
+    const list = group.querySelector<HTMLElement>('ul')!;
+    let animating = false;
+
+    function setExpanded(expanded: boolean) {
+      group.toggleAttribute('data-expanded', expanded);
+      toggle.setAttribute('aria-expanded', String(expanded));
+    }
+
+    // Outils au-delà de la première ligne (4 sur mobile, 5 au-delà).
+    const extras = () => [...list.children].slice(desktopRow.matches ? 5 : 4);
+
+    group.addEventListener('click', () => {
+      const expanding = !('expanded' in group.dataset);
+      if (reduceMotion.matches) return setExpanded(expanding);
+      if (animating) return;
+      animating = true;
+
+      const from = list.offsetHeight;
+      const resize = () => {
+        setExpanded(expanding);
+        const to = list.offsetHeight;
+        return gsap.fromTo(
+          list,
+          { height: from, overflow: 'hidden' },
+          { height: to, duration: 0.5, ease: 'power3.inOut', clearProps: 'height,overflow' },
+        );
+      };
+
+      if (expanding) {
+        resize();
+        gsap.fromTo(
+          extras(),
+          { autoAlpha: 0, y: 12 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'expo.out',
+            stagger: 0.05,
+            delay: 0.15,
+            clearProps: 'all',
+            onComplete: () => (animating = false),
+          },
+        );
+      } else {
+        // On efface d'abord les outils en trop, puis la liste se referme.
+        gsap.to(extras(), {
+          autoAlpha: 0,
+          y: 8,
+          duration: 0.2,
+          ease: 'power2.in',
+          onComplete: () => {
+            resize().then(() => (animating = false));
+            gsap.set(extras(), { clearProps: 'all' });
+          },
+        });
+      }
+    });
+  });
+</script>

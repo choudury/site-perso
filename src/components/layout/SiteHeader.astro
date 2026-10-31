@@ -1,5 +1,5 @@
 ---
-import Logo from '../../assets/logo.svg';
+import logo from '../../assets/logo.svg?raw';
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 import LocalInfo from '../LocalInfo.astro';
@@ -7,14 +7,20 @@ import ProfilePhoto from '../ProfilePhoto.astro';
 import { site } from '../../config/site';
 import { fr } from '../../i18n/fr';
 
+// Page en cours, pour la signaler dans les menus par un point violet.
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
 const links = [
-  { label: fr.nav.projects, href: '/#projets' },
-  { label: fr.nav.about, href: '/a-propos/' },
-  { label: fr.nav.contact, href: `mailto:${site.email}` },
+  { label: fr.nav.projects, href: '/#projets', current: path.startsWith('/projets') },
+  { label: fr.nav.about, href: '/a-propos/', current: path === '/a-propos' },
+  { label: fr.nav.lab, href: '/labo/', current: path === '/labo' },
+  { label: fr.nav.contact, href: `mailto:${site.email}`, current: false },
 ];
 
 // Le menu mobile ajoute l'accueil en tête.
-const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
+const mobileLinks = [{ label: fr.nav.home, href: '/', current: path === '/' }, ...links];
+
+const dot = 'size-1.5 shrink-0 rounded-full bg-accent';
 ---
 
 <header class="flex items-center justify-between gap-6">
@@ -28,7 +34,8 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
       {
         links.map((link) => (
           <li>
-            <Button href={link.href} variant="secondary">
+            <Button href={link.href} variant="secondary" aria-current={link.current ? 'page' : undefined}>
+              {link.current && <span class={dot} aria-hidden="true" />}
               {link.label}
             </Button>
           </li>
@@ -66,7 +73,8 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
         {
           links.map((link, index) => (
             <li class="sticky-item" style={`--i: ${index}`}>
-              <Button href={link.href} variant="glass">
+              <Button href={link.href} variant="glass" aria-current={link.current ? 'page' : undefined}>
+                {link.current && <span class={dot} aria-hidden="true" />}
                 {link.label}
               </Button>
             </li>
@@ -89,15 +97,22 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
   </div>
 </div>
 
-<!-- Menu mobile déplié : plein écran, avec le logo. -->
+<!-- Menu mobile déplié : plein écran. À l'ouverture, le logo se compose comme sur l'écran
+     de chargement, les liens montent un par un, puis les infos de Toulouse arrivent du bas. -->
 <dialog
   id="mobile-menu"
   aria-label={fr.nav.label}
   class="m-0 h-dvh max-h-none w-full max-w-none bg-page p-0 text-ink md:hidden"
 >
   <div class="flex h-full flex-col px-gutter pt-5 pb-10">
-    <div class="flex items-center justify-between">
-      <Logo class="size-12 text-ink" role="img" aria-label={fr.brand.logoAlt} />
+    <div class="flex h-12 items-center justify-between">
+      <span
+        class="size-8 text-ink [&>svg]:size-full"
+        role="img"
+        aria-label={fr.brand.logoAlt}
+        data-menu-logo
+        set:html={logo}
+      />
       <Button variant="secondary" data-menu-close>
         <Icon name="minus" class="size-4" />
         {fr.nav.close}
@@ -110,8 +125,14 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
         {
           mobileLinks.map((link) => (
             <li>
-              <a href={link.href} class="text-h1 font-medium text-ink active:text-accent" data-menu-link>
+              <a
+                href={link.href}
+                class="inline-flex items-center gap-4 text-h1 font-medium text-ink active:text-accent"
+                aria-current={link.current ? 'page' : undefined}
+                data-menu-link
+              >
                 {link.label}
+                {link.current && <span class="size-2.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />}
               </a>
             </li>
           ))
@@ -119,7 +140,9 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
       </ul>
     </nav>
 
-    <LocalInfo class="mt-auto px-4" />
+    <div class="mt-auto px-4" data-menu-info>
+      <LocalInfo />
+    </div>
   </div>
 </dialog>
 
@@ -153,24 +176,60 @@ const mobileLinks = [{ label: fr.nav.home, href: '/' }, ...links];
 </style>
 
 <script>
+  import { gsap } from 'gsap';
+  import { logoReveal } from '../../lib/logo-reveal';
+
   const dialog = document.querySelector<HTMLDialogElement>('#mobile-menu');
   const openButtons = document.querySelectorAll<HTMLButtonElement>('[data-menu-open]');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
   // showModal() rend le reste de la page inactif, piège le focus clavier dans le menu
-  // et ferme le menu avec la touche Échap.
-  openButtons.forEach((button) =>
-    button.addEventListener('click', () => {
-      dialog?.showModal();
-      button.setAttribute('aria-expanded', 'true');
-    }),
-  );
+  // et gère la touche Échap.
+  function openMenu(button: HTMLButtonElement) {
+    if (!dialog) return;
+    dialog.showModal();
+    button.setAttribute('aria-expanded', 'true');
+    if (reduceMotion.matches) return;
+
+    gsap
+      .timeline({ defaults: { ease: 'expo.out' } })
+      .fromTo(dialog, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' })
+      .add(logoReveal(dialog.querySelector('[data-menu-logo] svg')!), 0.05)
+      .fromTo(
+        dialog.querySelectorAll('[data-menu-close], [data-menu-link]'),
+        { y: 40, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.07 },
+        0.1,
+      )
+      // Les infos de Toulouse arrivent en dernier, depuis le bas de l'écran.
+      .fromTo(
+        dialog.querySelector('[data-menu-info]'),
+        { y: 64, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 1 },
+        0.5,
+      );
+  }
+
+  function closeMenu() {
+    if (!dialog?.open) return;
+    if (reduceMotion.matches) return dialog.close();
+    gsap.to(dialog, { autoAlpha: 0, duration: 0.25, ease: 'power2.in', onComplete: () => dialog.close() });
+  }
+
+  openButtons.forEach((button) => button.addEventListener('click', () => openMenu(button)));
 
   dialog?.addEventListener('close', () =>
     openButtons.forEach((button) => button.setAttribute('aria-expanded', 'false')),
   );
 
+  // Échap : on remplace la fermeture immédiate par la fermeture animée.
+  dialog?.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    closeMenu();
+  });
+
   dialog?.querySelectorAll('[data-menu-close], [data-menu-link]').forEach((el) => {
-    el.addEventListener('click', () => dialog.close());
+    el.addEventListener('click', closeMenu);
   });
 
   // Nav compacte : visible quand on remonte, au-delà de la hauteur de l'en-tête.

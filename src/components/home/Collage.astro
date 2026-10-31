@@ -1,8 +1,8 @@
 ---
 /*
  * Visuels personnels disposés en éventail : 5 sur desktop, 3 sur mobile.
- * Formats verticaux ou carrés uniquement (couverture, pochette). Les cartes se chevauchent
- * légèrement et pivotent depuis leur base, de 2 à 4° vers l'extérieur.
+ * Tous au même format portrait 3:4 et à la même taille, pour un ensemble lisible.
+ * Les cartes sont séparées par un petit espace et pivotent depuis leur base, de 2 à 4° vers l'extérieur.
  */
 import Placeholder from '../ui/Placeholder.astro';
 import { fr } from '../../i18n/fr';
@@ -10,22 +10,18 @@ import { fr } from '../../i18n/fr';
 const labels = fr.presentation.collage;
 
 type Fan = { r: number; y: number };
-type Item = { label: string; ratio: string; desktop: Fan; mobile?: Fan; center?: boolean };
+type Item = { label: string; desktop: Fan; mobile?: Fan; center?: boolean };
+
+const RATIO = '3 / 4';
 
 // r : rotation en degrés. y : décalage vers le bas, en % de la hauteur de la carte.
 // Sans réglage mobile, le visuel n'apparaît que sur desktop.
 const items: Item[] = [
-  { label: labels.mountain, ratio: '3 / 4', desktop: { r: -4, y: 14 } },
-  { label: labels.album, ratio: '1 / 1', desktop: { r: -2, y: 6 }, mobile: { r: -3, y: 8 } },
-  {
-    label: labels.toulouse,
-    ratio: '3 / 4',
-    desktop: { r: 0, y: 0 },
-    mobile: { r: 0, y: 0 },
-    center: true,
-  },
-  { label: labels.book, ratio: '2 / 3', desktop: { r: 2, y: 6 }, mobile: { r: 3, y: 8 } },
-  { label: labels.poster, ratio: '2 / 3', desktop: { r: 4, y: 14 } },
+  { label: labels.mountain, desktop: { r: -4, y: 12 } },
+  { label: labels.album, desktop: { r: -2, y: 4 }, mobile: { r: -3, y: 6 } },
+  { label: labels.toulouse, desktop: { r: 0, y: 0 }, mobile: { r: 0, y: 0 }, center: true },
+  { label: labels.book, desktop: { r: 2, y: 4 }, mobile: { r: 3, y: 6 } },
+  { label: labels.poster, desktop: { r: 4, y: 12 } },
 ];
 
 const vars = (f: Fan, prefix: string) => `--${prefix}r: ${f.r}deg; --${prefix}y: ${f.y}%;`;
@@ -35,44 +31,36 @@ const centerIndex = items.findIndex((item) => item.center);
 const layer = (index: number) => `z-index: ${items.length - Math.abs(index - centerIndex)};`;
 ---
 
-<div class="mx-auto flex max-w-fan items-center justify-center">
+<div class="mx-auto flex max-w-fan items-center justify-center gap-3 md:gap-5">
   {
     items.map((item, index) => (
       <div
-        class:list={['fan-item', item.center && 'fan-center', !item.mobile && 'hidden md:block']}
+        class:list={['fan-item', !item.mobile && 'hidden md:block']}
         style={vars(item.desktop, 'd') + (item.mobile ? vars(item.mobile, 'm') : '') + layer(index)}
       >
-        <Placeholder label={item.label} ratio={item.ratio} class="shadow-soft" />
+        <Placeholder label={item.label} ratio={RATIO} class="shadow-soft" />
       </div>
     ))
   }
 </div>
 
 <style>
-  /* Mobile : 3 cartes. Chaque carte recouvre un peu sa voisine (marge négative). */
+  /* Mobile : 3 cartes côte à côte, séparées par l'espace du conteneur. */
   .fan-item {
     position: relative;
     flex: none;
-    width: 34%;
-    margin-inline: -2.5%;
+    width: calc((100% - 2 * 0.75rem) / 3);
     transform-origin: 50% 100%;
     translate: 0 var(--my);
     rotate: var(--mr);
   }
-  .fan-center {
-    width: 38%;
-  }
 
-  /* Desktop : 5 cartes, la carte centrale légèrement plus grande et au premier plan. */
+  /* Desktop : 5 cartes de même taille. */
   @media (width >= 48rem) {
     .fan-item {
-      width: 19%;
-      margin-inline: -1.5%;
+      width: calc((100% - 4 * 1.25rem) / 5);
       translate: 0 var(--dy);
       rotate: var(--dr);
-    }
-    .fan-center {
-      width: 22%;
     }
   }
 </style>

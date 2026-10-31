@@ -5,6 +5,7 @@
 export const site = {
   name: 'Dorian Lala-Clement',
   city: 'Toulouse',
+  region: 'Occitanie',
   timeZone: 'Europe/Paris',
   // Coordonnées de Toulouse, pour la météo (service Open-Meteo, sans clé ni cookie).
   coordinates: { latitude: 43.6045, longitude: 1.444 },

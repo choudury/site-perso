@@ -59,7 +59,6 @@ function render() {
   });
 
   document.querySelectorAll<HTMLElement>('[data-local-info]').forEach((el) => {
-    el.dataset.daypart = day ? 'day' : 'night';
     if (!weather) return;
 
     const sky = skyFromCode(weather.code, day);

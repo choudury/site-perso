@@ -1,0 +1,61 @@
+# Page Labo : expérimentations, essais, projets perso. Pas de page dédiée, juste un aperçu.
+# image : visuel, chemin depuis src/assets/ (ex. « labo/affiche-01.jpg »).
+# video : vidéo courte en boucle, chemin depuis public/ (ex. « /labo/animation-01.mp4 »).
+# ratio : format de l'emplacement tant qu'il n'y a ni image ni vidéo (ex. « 3 / 4 »).
+# Les éléments ci-dessous sont des exemples à remplacer.
+
+- id: essai-1
+  order: 1
+  title: Expérimentation à venir
+  kind: Affiche
+  description: Une phrase pour expliquer le projet.
+  ratio: 3 / 4
+
+- id: essai-2
+  order: 2
+  title: Expérimentation à venir
+  kind: Animation
+  description: Une phrase pour expliquer le projet.
+  ratio: 1 / 1
+
+- id: essai-3
+  order: 3
+  title: Expérimentation à venir
+  kind: Vibe coding
+  description: Une phrase pour expliquer le projet.
+  ratio: 4 / 3
+
+- id: essai-4
+  order: 4
+  title: Expérimentation à venir
+  kind: Visuel
+  description: Une phrase pour expliquer le projet.
+  ratio: 4 / 5
+
+- id: essai-5
+  order: 5
+  title: Expérimentation à venir
+  kind: Affiche
+  description: Une phrase pour expliquer le projet.
+  ratio: 2 / 3
+
+- id: essai-6
+  order: 6
+  title: Expérimentation à venir
+  kind: Animation
+  description: Une phrase pour expliquer le projet.
+  ratio: 16 / 9
+
+- id: essai-7
+  order: 7
+  title: Expérimentation à venir
+  kind: Vibe coding
+  description: Une phrase pour expliquer le projet.
+  ratio: 1 / 1
+
+- id: essai-8
+  order: 8
+  title: Expérimentation à venir
+  kind: Visuel
+  description: Une phrase pour expliquer le projet.
+  ratio: 3 / 4

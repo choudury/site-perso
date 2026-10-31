@@ -1,0 +1,53 @@
+# Carrousel « Culture » de la page À propos : albums, livres, films, séries.
+# Tous les visuels ont le même format portrait 3:4 (vertical) ; Dorian les prépare avec un aplat de couleur en fond.
+# cover : visuel, chemin depuis src/assets/ (ex. « culture/anna-karenine.jpg »).
+# kind : Album, Livre, Film ou Série.
+
+- id: anna-karenine
+  order: 1
+  title: Anna Karénine
+  author: Léon Tolstoï
+  kind: Livre
+
+- id: 36-chambers
+  order: 2
+  title: Enter the Wu-Tang (36 Chambers)
+  author: Wu-Tang Clan
+  kind: Album
+
+- id: breaking-bad
+  order: 3
+  title: Breaking Bad
+  author: Vince Gilligan
+  kind: Série
+
+- id: psychologie-cognitive
+  order: 4
+  title: Manuel de psychologie cognitive
+  kind: Livre
+
+- id: une-main-lave-l-autre
+  order: 5
+  title: Une main lave l’autre
+  author: Alpha Wann
+  kind: Album
+
+- id: film-a-venir
+  order: 6
+  title: À compléter
+  kind: Film
+
+- id: serie-a-venir
+  order: 7
+  title: À compléter
+  kind: Série
+
+- id: album-a-venir
+  order: 8
+  title: À compléter
+  kind: Album
+
+- id: livre-a-venir
+  order: 9
+  title: À compléter
+  kind: Livre

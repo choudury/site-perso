@@ -1,0 +1,28 @@
+# Parcours professionnel (page À propos), du plus récent au plus ancien.
+
+- id: sawup
+  order: 1
+  role: Responsable marketing numérique
+  company: SawUp
+  contract: CDI
+  start: oct. 2021
+  current: true
+  summary: Design, site, acquisition, contenu et réseaux sociaux d’une école en ligne de production musicale.
+
+- id: freelance
+  order: 2
+  role: Freelance
+  company: Indépendant
+  contract: En parallèle
+  start: oct. 2020
+  current: true
+  summary: Identités visuelles, visuels et supports de communication, print, sites web et web design, pour des entreprises et des indépendants.
+
+- id: les-spartiates
+  order: 3
+  role: Chargé de communication digitale
+  company: Les Spartiates
+  contract: Alternance
+  start: août 2020
+  end: août 2021
+  summary: Community management, graphisme et gestion du site web.

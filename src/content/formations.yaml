@@ -1,0 +1,22 @@
+# Formations (page À propos), du diplôme le plus récent au plus ancien.
+# year : année d’obtention du diplôme.
+# mockup : visuel du diplôme (à venir) ; en attendant, un emplacement neutre s’affiche.
+
+- id: master
+  order: 1
+  title: Master Stratégie de communication 360°, design et communication visuelle
+  school: Ynov Toulouse
+  year: '2023'
+  detail: Webdesign et UX, design thinking, data, référencement, webmarketing, stratégie de communication.
+
+- id: licence-pro
+  order: 2
+  title: Licence professionnelle Communication digitale et webmastering
+  school: Université de Toulouse
+  year: '2021'
+
+- id: dut
+  order: 3
+  title: DUT Métiers du multimédia et de l’internet
+  school: Université de Toulouse
+  year: '2020'

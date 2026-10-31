@@ -3,6 +3,7 @@
 #   - « logos:… » : logo en couleurs d'origine (bibliothèque Iconify « logos »)
 #   - « simple-icons:… » + color : logo d'une seule couleur, teinté avec la couleur officielle
 # Sans icône, un emplacement neutre s'affiche en attendant le fichier.
+# Au-delà d'une ligne (4 outils sur mobile, 5 sur desktop), le groupe se replie derrière un bouton « + ».
 
 - id: design
   order: 1
@@ -12,7 +13,8 @@
     - { name: Photoshop, icon: 'logos:adobe-photoshop' }
     - { name: Illustrator, icon: 'logos:adobe-illustrator' }
     - { name: Affinity }
-    - { name: DaVinci Resolve }
+    - { name: Resolve }
+    - { name: Jitter }
 
 - id: web
   order: 2
@@ -31,6 +33,8 @@
     - { name: Google Ads, icon: 'logos:google-ads' }
     - { name: HubSpot, icon: 'simple-icons:hubspot', color: '#FF7A59' }
     - { name: Calendly, icon: 'simple-icons:calendly', color: '#006BFF' }
+    - { name: Kit }
+    - { name: Google Analytics, icon: 'logos:google-analytics' }
 
 - id: automation
   order: 4

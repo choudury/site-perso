@@ -21,9 +21,12 @@
   --color-neutral-150: #e8e8ec;
   --color-neutral-200: #dcdce0;
   --color-neutral-300: #c0c0c6;
+  --color-neutral-350: #a9a9b2;
   --color-neutral-400: #9e9ea6;
   --color-neutral-500: #84848e;
   --color-neutral-600: #6b6b76;
+  --color-neutral-700: #36363c;
+  --color-neutral-800: #2a2a2f;
   --color-neutral-950: #0a0a0b;
 
   /* Accent violet profond et ses deux déclinaisons. */
@@ -44,6 +47,12 @@
   --color-ink: var(--color-neutral-950);
   --color-muted: var(--color-neutral-600);
   --color-on-accent: #ffffff;
+
+  /* Bloc gris foncé (section contact). */
+  --color-night: var(--color-neutral-800);
+  --color-night-surface: var(--color-neutral-700);
+  --color-night-muted: var(--color-neutral-350);
+  --color-on-night: var(--color-neutral-50);
 
   /* ---------- Typographie ---------- */
   --font-*: initial;
@@ -87,7 +96,7 @@
   --container-*: initial;
   --container-prose: 40rem; /* largeur de lecture ≈ 65 caractères */
   --container-site: 82rem; /* 1312 px de contenu max */
-  --container-fan: 56rem; /* éventail de visuels de la présentation */
+  --container-fan: 64rem; /* éventail de visuels de la présentation */
 
   /* ---------- Rayons ---------- */
   --radius-*: initial;

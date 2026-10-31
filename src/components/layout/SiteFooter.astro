@@ -14,8 +14,9 @@ const linkClass =
   'text-small font-medium text-ink transition-colors duration-(--duration-fast) ease-out hover:text-accent';
 ---
 
-<footer aria-label={fr.footer.label} class="mx-auto w-full max-w-site px-gutter pb-gutter">
-  <div class="flex flex-col gap-16 rounded-card bg-surface p-6 sm:p-8 md:gap-20 lg:p-10">
+<!-- Au premier plan : le bloc contact remonte de dessous le pied de page. -->
+<footer aria-label={fr.footer.label} class="relative z-10 mx-auto w-full max-w-site px-gutter pb-gutter">
+  <div class="flex flex-col gap-16 rounded-card bg-surface p-6 sm:p-8 md:gap-20 lg:p-10" data-footer-card>
     <div class="flex items-center justify-between gap-6">
       <a href="/" aria-label={`${site.name}, ${fr.nav.home}`} class="rounded-control">
         <Logo class="size-8 text-ink" aria-hidden="true" />
@@ -47,3 +48,21 @@ const linkClass =
     </div>
   </div>
 </footer>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // À l'arrivée en bas de page, le pied de page glisse depuis le bas de l'écran.
+  // Il reste opaque pendant le mouvement pour couvrir le bloc contact qui passe dessous.
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.from('[data-footer-card]', {
+      y: 120,
+      duration: 1.1,
+      ease: 'expo.out',
+      scrollTrigger: { trigger: 'footer', start: 'top bottom' },
+    });
+  });
+</script>

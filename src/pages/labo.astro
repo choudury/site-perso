@@ -1,0 +1,251 @@
+---
+/*
+ * Labo : mosaïque d'expérimentations (images ou courtes vidéos), sans page dédiée.
+ * Au survol, une fiche en verre dépoli monte du bas du visuel. Au clic, le visuel s'ouvre en grand.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import Contact from '../components/Contact.astro';
+import Icon from '../components/ui/Icon.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+import { site } from '../config/site';
+import { fr } from '../i18n/fr';
+
+const t = fr.lab;
+const items = (await getCollection('labo')).sort((a, b) => a.data.order - b.data.order);
+
+// Les visuels sont rangés dans src/assets/labo/ et désignés par leur nom dans labo.yaml.
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/labo/*.{jpg,jpeg,png,webp,gif}', {
+  eager: true,
+});
+const imageFor = (path?: string) => (path ? images[`/src/assets/${path}`]?.default : undefined);
+
+const roundButton =
+  'grid size-11 place-items-center rounded-control bg-surface-hover/75 text-ink backdrop-blur-lg transition-colors duration-(--duration-fast) ease-out hover:bg-surface-hover';
+---
+
+<BaseLayout title={`${t.metaTitle} — ${site.name}`} description={t.intro}>
+  <div class="mx-auto w-full max-w-site px-gutter pt-5 md:pt-8">
+    <SiteHeader />
+  </div>
+
+  <main>
+    <section class="mx-auto w-full max-w-site px-gutter pt-section">
+      <div class="flex max-w-prose flex-col gap-6">
+        <h1 class="text-h1 font-medium">{t.title}</h1>
+        <p class="text-lead font-light text-muted">{t.intro}</p>
+      </div>
+
+      <!-- Mosaïque : colonnes de hauteurs libres, chaque visuel garde son format. -->
+      <ul class="mt-14 columns-1 gap-4 sm:columns-2 md:mt-20 md:gap-6 lg:columns-3">
+        {
+          items.map(({ data }, index) => {
+            const image = imageFor(data.image);
+            return (
+              <li class="mb-4 break-inside-avoid md:mb-6">
+                <button
+                  type="button"
+                  class="lab-item group relative block w-full overflow-hidden rounded-card text-left"
+                  aria-label={t.open(data.title)}
+                  data-lab-open={index}
+                  data-kind={data.kind}
+                  data-title={data.title}
+                  data-description={data.description}
+                  data-ratio={data.ratio}
+                >
+                  <div data-lab-media>
+                    {data.video ? (
+                      <video
+                        src={data.video}
+                        class="w-full"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                        preload="metadata"
+                        aria-hidden="true"
+                      />
+                    ) : image ? (
+                      <Image
+                        src={image}
+                        alt=""
+                        widths={[480, 800, 1200, 1800]}
+                        sizes="(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw"
+                        class="w-full"
+                      />
+                    ) : (
+                      <Placeholder label={data.kind} ratio={data.ratio} class="rounded-none" />
+                    )}
+                  </div>
+
+                  <!-- Fiche en verre dépoli : monte au survol (souris), toujours visible au doigt. -->
+                  <div
+                    class="lab-caption absolute inset-x-3 bottom-3 flex flex-col gap-1 rounded-control bg-page/70 p-4 backdrop-blur-lg"
+                  >
+                    <span class="text-small font-medium text-muted">{data.kind}</span>
+                    <span class="text-body font-medium">{data.title}</span>
+                    <span class="lab-description text-small text-muted">{data.description}</span>
+                  </div>
+                </button>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+
+    <Contact />
+  </main>
+
+  <SiteFooter />
+
+  <!-- Visionneuse plein écran -->
+  <dialog
+    id="labo-viewer"
+    aria-label={t.viewer}
+    class="m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 text-on-night outline-none backdrop:bg-night"
+    tabindex="-1"
+    data-lab-viewer
+  >
+    <div class="flex h-full flex-col gap-6 p-gutter" data-lab-viewer-body>
+      <div class="flex items-center justify-between">
+        <p class="text-small font-medium text-night-muted tabular-nums" data-lab-counter></p>
+        <button type="button" class={roundButton} aria-label={t.close} data-lab-close>
+          <Icon name="x" class="size-5" />
+        </button>
+      </div>
+
+      <div class="grid min-h-0 flex-1 place-items-center" data-lab-stage></div>
+
+      <div class="flex items-end justify-between gap-6">
+        <div class="flex max-w-prose flex-col gap-1">
+          <p class="text-small font-medium text-night-muted" data-lab-kind></p>
+          <p class="text-lead font-medium" data-lab-title></p>
+          <p class="text-small text-night-muted" data-lab-description></p>
+        </div>
+        <div class="flex shrink-0 gap-2">
+          <button type="button" class={roundButton} aria-label={t.previous} data-lab-prev>
+            <Icon name="arrow-left" class="size-5" />
+          </button>
+          <button type="button" class={roundButton} aria-label={t.next} data-lab-next>
+            <Icon name="arrow-right" class="size-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</BaseLayout>
+
+<style>
+  /* Avec une souris, la fiche est cachée sous le visuel et monte au survol ou au focus clavier. */
+  @media (hover: hover) {
+    .lab-caption {
+      translate: 0 calc(100% + 1rem);
+      transition: translate var(--duration-base) var(--ease-out);
+    }
+    .lab-item:hover .lab-caption,
+    .lab-item:focus-visible .lab-caption {
+      translate: 0 0;
+    }
+  }
+  /* Au doigt, la fiche reste visible, réduite au type et au titre. */
+  @media (hover: none) {
+    .lab-description {
+      display: none;
+    }
+  }
+  .lab-item :global(img),
+  .lab-item :global(video) {
+    transition: scale var(--duration-slow) var(--ease-out);
+  }
+  .lab-item:hover :global(img),
+  .lab-item:hover :global(video) {
+    scale: 1.02;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const viewer = document.querySelector<HTMLDialogElement>('[data-lab-viewer]')!;
+  const stage = viewer.querySelector<HTMLElement>('[data-lab-stage]')!;
+  const items = [...document.querySelectorAll<HTMLButtonElement>('[data-lab-open]')];
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const text = (selector: string, value: string) => (viewer.querySelector(selector)!.textContent = value);
+  let current = 0;
+
+  function show(index: number) {
+    current = (index + items.length) % items.length;
+    const item = items[current];
+
+    // On reprend le visuel de la mosaïque, en le faisant tenir dans l'écran.
+    const media = item.querySelector('[data-lab-media]')!.firstElementChild!.cloneNode(true) as HTMLElement;
+    media.removeAttribute('aria-hidden');
+    media.style.maxHeight = '100%';
+    media.style.maxWidth = '100%';
+    media.style.borderRadius = 'var(--radius-card)';
+    if (media instanceof HTMLImageElement) {
+      media.sizes = '90vw';
+      media.alt = item.dataset.title ?? '';
+      media.style.width = 'auto';
+      media.style.objectFit = 'contain';
+    } else if (media instanceof HTMLVideoElement) {
+      media.controls = true;
+      media.style.width = 'auto';
+    } else {
+      // Emplacement vide : il garde son format, au plus 60 % de la hauteur de l'écran.
+      const [w, h] = (item.dataset.ratio ?? '4 / 3').split('/').map(Number);
+      media.style.width = `min(100%, calc(60dvh * ${w} / ${h}))`;
+    }
+    stage.replaceChildren(media);
+
+    text('[data-lab-counter]', `${current + 1} / ${items.length}`);
+    text('[data-lab-kind]', item.dataset.kind ?? '');
+    text('[data-lab-title]', item.dataset.title ?? '');
+    text('[data-lab-description]', item.dataset.description ?? '');
+
+    if (!reduceMotion.matches) {
+      gsap.fromTo(media, { autoAlpha: 0, scale: 0.97 }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'expo.out' });
+    }
+  }
+
+  function open(index: number) {
+    show(index);
+    viewer.showModal();
+    // Le focus va à la visionneuse elle-même (et non au bouton Fermer) : les flèches du clavier y fonctionnent.
+    viewer.focus();
+    if (!reduceMotion.matches) {
+      gsap.fromTo(viewer, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' });
+    }
+  }
+
+  function close() {
+    if (reduceMotion.matches) return viewer.close();
+    gsap.to(viewer, { autoAlpha: 0, duration: 0.2, ease: 'power2.in', onComplete: () => viewer.close() });
+  }
+
+  items.forEach((item, index) => item.addEventListener('click', () => open(index)));
+  viewer.querySelector('[data-lab-close]')!.addEventListener('click', close);
+  viewer.querySelector('[data-lab-prev]')!.addEventListener('click', () => show(current - 1));
+  viewer.querySelector('[data-lab-next]')!.addEventListener('click', () => show(current + 1));
+
+  // Échap ferme avec la même animation ; les flèches du clavier passent d'un visuel à l'autre.
+  viewer.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    close();
+  });
+  viewer.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') show(current - 1);
+    if (event.key === 'ArrowRight') show(current + 1);
+  });
+
+  // Un clic à côté du visuel (sur le fond) ferme la visionneuse.
+  viewer.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (target === viewer || target === stage || target.matches('[data-lab-viewer-body]')) close();
+  });
+</script>

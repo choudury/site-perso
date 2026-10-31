@@ -1,6 +1,6 @@
 ---
 /*
- * Toulouse en direct : drapeau occitan, heure locale avec icône jour/nuit, météo.
+ * Toulouse en direct : drapeau occitan, heure locale, météo (icône du ciel selon le jour ou la nuit).
  * Les valeurs sont remplies par lib/live-toulouse.ts dans le navigateur.
  */
 import Occitanie from '../assets/drapeaux/occitanie.svg';
@@ -35,7 +35,6 @@ const skyIcons = {
     className,
   ]}
   data-local-info
-  data-daypart="unknown"
   data-sky="unknown"
 >
   <span class="flex items-center gap-2 text-ink">
@@ -44,8 +43,7 @@ const skyIcons = {
   </span>
 
   <span class="flex items-center gap-1.5">
-    <Icon name="sun" class="size-4" data-daypart-icon="day" />
-    <Icon name="moon" class="size-4" data-daypart-icon="night" />
+    <Icon name="clock" class="size-4" />
     <time data-local-time aria-label={fr.localTime}>--:--</time>
   </span>
 
@@ -56,14 +54,9 @@ const skyIcons = {
 </div>
 
 <style is:global>
-  /* Seules les icônes correspondant au moment de la journée et au ciel actuel sont visibles. */
-  .local-info [data-daypart-icon],
+  /* Seule l'icône correspondant au ciel actuel est visible. */
   .local-info [data-sky-icon] {
     display: none;
-  }
-  .local-info[data-daypart='day'] [data-daypart-icon='day'],
-  .local-info[data-daypart='night'] [data-daypart-icon='night'] {
-    display: block;
   }
   .local-info[data-sky='clear-day'] [data-sky-icon='clear-day'],
   .local-info[data-sky='clear-night'] [data-sky-icon='clear-night'],

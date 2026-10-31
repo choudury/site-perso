@@ -1,0 +1,186 @@
+---
+/*
+ * Carrousel « Culture » : albums, livres, films, séries, tous au même format portrait 3:4.
+ * Défilement au doigt (natif), à la souris (glisser) et aux flèches. Il avance seul d'un cran toutes
+ * les 5 secondes, sauf au survol, au clavier, juste après un toucher, ou si le visiteur demande moins d'animations.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import { fr } from '../../i18n/fr';
+
+const t = fr.about.culture;
+const items = (await getCollection('culture')).sort((a, b) => a.data.order - b.data.order);
+
+// Les visuels sont rangés dans src/assets/culture/ et désignés par leur nom dans culture.yaml.
+const covers = import.meta.glob<{ default: ImageMetadata }>('/src/assets/culture/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const coverFor = (path?: string) => (path ? covers[`/src/assets/${path}`]?.default : undefined);
+
+const arrowClass =
+  'grid size-11 place-items-center rounded-control bg-surface text-ink transition-colors duration-(--duration-fast) ease-out hover:bg-surface-hover disabled:cursor-default disabled:text-neutral-400 disabled:hover:bg-surface';
+---
+
+<section
+  aria-labelledby="culture-titre"
+  aria-roledescription="carrousel"
+  class="mx-auto w-full max-w-site px-gutter pt-section"
+  data-carousel
+>
+  <div class="flex items-end justify-between gap-6">
+    <h2 id="culture-titre" class="text-h2 font-medium">{t.title}</h2>
+    <div class="flex gap-2">
+      <button type="button" class={arrowClass} aria-label={t.previous} data-carousel-prev>
+        <Icon name="arrow-left" class="size-5" />
+      </button>
+      <button type="button" class={arrowClass} aria-label={t.next} data-carousel-next>
+        <Icon name="arrow-right" class="size-5" />
+      </button>
+    </div>
+  </div>
+
+  <!-- La piste déborde jusqu'aux bords de l'écran, avec les mêmes marges pour l'alignement. -->
+  <ul
+    class="carousel-track -mx-gutter mt-10 flex snap-x snap-mandatory scroll-px-gutter gap-4 overflow-x-auto px-gutter md:mt-14 md:gap-6"
+    data-carousel-track
+  >
+    {
+      items.map(({ data }, index) => {
+        const cover = coverFor(data.cover);
+        return (
+          <li
+            class="flex w-[72%] shrink-0 snap-start flex-col gap-4 sm:w-[42%] lg:w-[calc((100%-3*1.5rem)/4)]"
+            role="group"
+            aria-roledescription={t.item}
+            aria-label={t.position(index + 1, items.length)}
+          >
+            {cover ? (
+              <Image
+                src={cover}
+                alt={`${data.kind} : ${data.title}`}
+                widths={[320, 640]}
+                sizes="(min-width: 64rem) 25vw, 72vw"
+                draggable="false"
+                class="aspect-3/4 w-full rounded-card object-cover"
+              />
+            ) : (
+              <Placeholder label={data.kind} ratio="3 / 4" />
+            )}
+            <div class="flex flex-col gap-1">
+              <p class="text-small font-medium text-muted">{data.kind}</p>
+              <p class="text-body font-medium">{data.title}</p>
+              {data.author && <p class="text-small text-muted">{data.author}</p>}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>
+
+<style>
+  /* Barre de défilement masquée : on navigue au doigt, à la souris ou aux flèches. */
+  .carousel-track {
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+  @media (pointer: fine) {
+    .carousel-track {
+      cursor: grab;
+    }
+  }
+  .carousel-track[data-dragging] {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
+</style>
+
+<script>
+  const AUTOPLAY_DELAY = 5_000;
+  // Après un toucher, l'avance automatique attend un peu plus longtemps avant de reprendre.
+  const TOUCH_PAUSE = 10_000;
+
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((carousel) => {
+    const track = carousel.querySelector<HTMLElement>('[data-carousel-track]')!;
+    const prev = carousel.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+    const next = carousel.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+    const maxScroll = () => track.scrollWidth - track.clientWidth;
+    // Un pas = la largeur d'un élément et de l'espace qui le suit.
+    const step = () => {
+      const [first, second] = track.children;
+      return second ? second.getBoundingClientRect().left - first.getBoundingClientRect().left : 0;
+    };
+
+    function go(direction: 1 | -1, loop = false) {
+      const atEnd = track.scrollLeft >= maxScroll() - 4;
+      const left = loop && direction === 1 && atEnd ? 0 : track.scrollLeft + direction * step();
+      track.scrollTo({ left, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    }
+
+    function updateArrows() {
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft >= maxScroll() - 4;
+    }
+
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    track.addEventListener('scroll', updateArrows, { passive: true });
+    addEventListener('resize', updateArrows);
+    updateArrows();
+
+    // Glisser à la souris (au doigt, le défilement natif suffit).
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragging = false;
+
+    track.addEventListener('pointerdown', (event) => {
+      if (event.pointerType !== 'mouse' || event.button !== 0) return;
+      dragging = true;
+      dragStartX = event.clientX;
+      dragStartScroll = track.scrollLeft;
+      track.dataset.dragging = '';
+      track.setPointerCapture(event.pointerId);
+    });
+    track.addEventListener('pointermove', (event) => {
+      if (dragging) track.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
+    });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      // On réactive l'aimantation en conservant la position, puis on se cale sur l'élément le plus proche.
+      const left = track.scrollLeft;
+      delete track.dataset.dragging;
+      track.scrollLeft = left;
+      const nearest = Math.round(left / step()) * step();
+      track.scrollTo({ left: nearest, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    };
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+
+    // Avance automatique, en pause au survol, au toucher et quand le focus clavier est dedans.
+    let hovered = false;
+    let focused = false;
+    let touchedUntil = 0;
+    carousel.addEventListener('pointerenter', (event) => event.pointerType === 'mouse' && (hovered = true));
+    carousel.addEventListener('pointerleave', () => (hovered = false));
+    carousel.addEventListener('focusin', () => (focused = true));
+    carousel.addEventListener('focusout', () => (focused = false));
+    carousel.addEventListener('touchstart', () => (touchedUntil = Date.now() + TOUCH_PAUSE), {
+      passive: true,
+    });
+
+    setInterval(() => {
+      const paused = hovered || focused || dragging || Date.now() < touchedUntil || document.hidden;
+      if (!paused && !reduceMotion.matches) go(1, true);
+    }, AUTOPLAY_DELAY);
+  });
+</script>

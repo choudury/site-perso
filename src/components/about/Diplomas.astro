@@ -1,0 +1,53 @@
+---
+/*
+ * Études supérieures : une carte par diplôme, avec la place pour un mock-up du diplôme,
+ * puis l'année, l'école et l'intitulé en texte courant. Ambiance distincte de la frise du parcours.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Placeholder from '../ui/Placeholder.astro';
+import { fr } from '../../i18n/fr';
+
+const formations = (await getCollection('formations')).sort((a, b) => a.data.order - b.data.order);
+
+// Les mock-ups sont rangés dans src/assets/diplomes/ et désignés par leur nom dans formations.yaml.
+const mockups = import.meta.glob<{ default: ImageMetadata }>('/src/assets/diplomes/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const mockupFor = (path?: string) => (path ? mockups[`/src/assets/${path}`]?.default : undefined);
+---
+
+<section aria-labelledby="formations-titre" class="mx-auto w-full max-w-site px-gutter pt-section">
+  <h2 id="formations-titre" class="text-h2 font-medium">{fr.about.education.title}</h2>
+
+  <ul class="mt-10 grid gap-4 md:mt-14 md:grid-cols-3 md:gap-6">
+    {
+      formations.map(({ data }) => {
+        const mockup = mockupFor(data.mockup);
+        return (
+          <li class="flex flex-col overflow-hidden rounded-card bg-surface">
+            {mockup ? (
+              <Image
+                src={mockup}
+                alt={`${fr.about.education.mockup} : ${data.title}`}
+                widths={[480, 800]}
+                sizes="(min-width: 48rem) 33vw, 100vw"
+                class="aspect-4/3 w-full object-cover"
+              />
+            ) : (
+              <Placeholder label={fr.about.education.mockup} ratio="4 / 3" class="rounded-none" />
+            )}
+            <div class="flex flex-col gap-2 p-5 sm:p-6">
+              <p class="text-small font-medium text-muted tabular-nums">
+                {data.year} · {data.school}
+              </p>
+              <h3 class="text-body font-medium">{data.title}</h3>
+              {data.detail && <p class="text-small text-muted">{data.detail}</p>}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>

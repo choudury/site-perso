@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import Contact from '../components/Contact.astro';
+import Placeholder from '../components/ui/Placeholder.astro';
+import Timeline from '../components/about/Timeline.astro';
+import Diplomas from '../components/about/Diplomas.astro';
+import Culture from '../components/about/Culture.astro';
+import { site } from '../config/site';
+import { fr } from '../i18n/fr';
+
+// Ordre de la page, du plus professionnel au plus personnel :
+// introduction, parcours (dont le freelance), études, culture, puis contact.
+---
+
+<BaseLayout title={`${fr.about.metaTitle} — ${site.name}`} description={fr.about.intro[0]}>
+  <div class="mx-auto w-full max-w-site px-gutter pt-5 md:pt-8">
+    <SiteHeader />
+  </div>
+
+  <main>
+    <section class="mx-auto grid w-full max-w-site gap-10 px-gutter pt-section md:grid-cols-12 md:items-end md:gap-6">
+      <div class="md:col-span-5">
+        <Placeholder label={fr.about.photoLabel} ratio="4 / 5" />
+      </div>
+      <div class="flex flex-col gap-6 md:col-span-6 md:col-start-7">
+        <h1 class="text-h1 font-medium">{fr.about.title}</h1>
+        <div class="flex max-w-prose flex-col gap-4 text-lead font-light text-muted">
+          {fr.about.intro.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <Timeline />
+    <Diplomas />
+    <Culture />
+    <Contact />
+  </main>
+
+  <SiteFooter />
+</BaseLayout>

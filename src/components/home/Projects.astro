@@ -10,7 +10,7 @@ const projects = (await getCollection('projets')).sort((a, b) => a.data.order - 
   <!-- Titre lu par les lecteurs d'écran seulement : les cartes parlent d'elles-mêmes. -->
   <h2 id="projets-titre" class="sr-only">{fr.projects.title}</h2>
 
-  <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
+  <ul class="grid gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-14">
     {
       projects.map(({ id, data }) => (
         <li>
