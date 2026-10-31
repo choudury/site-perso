@@ -6,12 +6,13 @@ import Contact from '../components/Contact.astro';
 import Placeholder from '../components/ui/Placeholder.astro';
 import Timeline from '../components/about/Timeline.astro';
 import Diplomas from '../components/about/Diplomas.astro';
+import Offscreen from '../components/about/Offscreen.astro';
 import Culture from '../components/about/Culture.astro';
 import { site } from '../config/site';
 import { fr } from '../i18n/fr';
 
 // Ordre de la page, du plus professionnel au plus personnel :
-// introduction, parcours (dont le freelance), études, culture, puis contact.
+// introduction, parcours (dont le freelance), études, « Derrière l’écran », culture, puis contact.
 ---
 
 <BaseLayout title={`${fr.about.metaTitle} — ${site.name}`} description={fr.about.intro[0]}>
@@ -37,6 +38,7 @@ import { fr } from '../i18n/fr';
 
     <Timeline />
     <Diplomas />
+    <Offscreen />
     <Culture />
     <Contact />
   </main>

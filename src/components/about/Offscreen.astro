@@ -1,0 +1,28 @@
+---
+/*
+ * « Derrière l'écran », version page À propos : la partie plus personnelle, avant « En ce moment ».
+ * Même galerie que l'accueil (photos et emojis), placée à gauche cette fois.
+ * Mobile : titre, photo, emojis collés sous la photo, puis le texte.
+ */
+import GalleryFrame from '../home/GalleryFrame.astro';
+import GalleryPicker from '../home/GalleryPicker.astro';
+import { fr } from '../../i18n/fr';
+---
+
+<section
+  aria-labelledby="derriere-ecran-titre"
+  class="mx-auto grid w-full max-w-site px-gutter pt-section lg:grid-cols-12 lg:items-center lg:gap-6"
+  data-gallery
+>
+  <div class="flex flex-col gap-3 max-lg:order-2 max-lg:mt-6 lg:col-span-6">
+    <GalleryFrame />
+    <GalleryPicker />
+  </div>
+
+  <div class="flex flex-col gap-6 max-lg:contents lg:col-span-5 lg:col-start-8">
+    <h2 id="derriere-ecran-titre" class="text-h2 font-medium max-lg:order-1">{fr.about.offscreen.title}</h2>
+    <div class="flex max-w-prose flex-col gap-4 text-lead font-light text-muted max-lg:order-3 max-lg:mt-6">
+      {fr.about.offscreen.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </div>
+</section>

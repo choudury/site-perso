@@ -2,16 +2,15 @@
 /*
  * Appel à écrire, en bloc gris foncé pour marquer la fin de page.
  * Carte cliquable (ContactCard) avec la photo, l'adresse mail et une flèche. Réutilisé sur l'accueil et la page À propos.
- * Au défilement, le bloc remonte de sous le pied de page jusqu'à sa place.
+ * Il passe au premier plan : le pied de page sort de dessous en bas de page (voir SiteFooter).
  */
 import ContactCard from './ContactCard.astro';
 import { fr } from '../i18n/fr';
 ---
 
-<section aria-labelledby="contact-titre" class="mx-auto w-full max-w-site px-gutter pt-section pb-6 md:pb-10" data-contact>
+<section aria-labelledby="contact-titre" class="relative z-10 mx-auto w-full max-w-site scroll-mt-8 px-gutter pt-section pb-6 md:pb-10" id="contact" data-contact>
   <div class="flex flex-col gap-10 rounded-card bg-night p-5 text-on-night sm:p-10 md:gap-14 lg:p-16" data-contact-card>
     <div class="flex flex-col gap-6">
-      <p class="text-small font-medium text-night-muted">{fr.contact.label}</p>
       <h2 id="contact-titre" class="text-h1">
         <span class="block font-medium">{fr.contact.titleStrong}</span>
         <span class="block font-light text-night-muted">{fr.contact.titleLight}</span>
@@ -23,22 +22,3 @@ import { fr } from '../i18n/fr';
   </div>
 </section>
 
-<script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  // Le bloc part plus bas, caché sous le pied de page, et remonte à sa place au fil du défilement.
-  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
-    gsap.fromTo(
-      '[data-contact-card]',
-      { y: 180 },
-      {
-        y: 0,
-        ease: 'none',
-        scrollTrigger: { trigger: '[data-contact]', start: 'top bottom', end: 'bottom bottom', scrub: 0.6 },
-      },
-    );
-  });
-</script>

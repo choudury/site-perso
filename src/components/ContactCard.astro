@@ -11,10 +11,12 @@ import { fr } from '../i18n/fr';
 interface Props {
   /** night : sur le bloc gris foncé du contact. light : sur le fond clair de la page. */
   tone?: 'night' | 'light';
+  /** Adresse seule, sans le délai de réponse (menu mobile). */
+  compact?: boolean;
   class?: string;
 }
 
-const { tone = 'night', class: className } = Astro.props;
+const { tone = 'night', compact = false, class: className } = Astro.props;
 
 const styles = {
   night: {
@@ -49,7 +51,7 @@ const styles = {
   />
   <span class="flex min-w-0 flex-1 flex-col">
     <span class="truncate text-body font-medium sm:text-lead">{site.email}</span>
-    <span class:list={['text-small', styles.muted]}>{fr.contact.responseTime}</span>
+    {!compact && <span class:list={['text-small', styles.muted]}>{fr.contact.responseTime}</span>}
   </span>
   <Icon
     name="arrow-right"

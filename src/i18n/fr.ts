@@ -31,11 +31,20 @@ export const fr = {
     roles: 'Rôle',
   },
   availability: {
-    label: 'Disponibilités',
+    status: 'Disponible',
     // En deux temps, comme les titres : l'information, puis la précision plus légère.
-    titleStrong: 'J’ai plusieurs heures par semaine pour un nouveau projet.',
-    titleLight: 'De préférence sur ces thèmes :',
-    themes: ['Musique', 'Culture', 'Artisanat', 'Sport', 'Projets locaux à Toulouse et en Occitanie'],
+    titleStrong: 'J’ai plusieurs heures par semaine pour accueillir un nouveau projet.',
+    titleLight: 'De préférence sur les thèmes suivants :',
+    themes: [
+      'Musique',
+      'Culture',
+      'Art',
+      'Artisanat',
+      'Sport',
+      'Restauration',
+      'Projets locaux à Toulouse et en Occitanie',
+    ],
+    contact: 'Me contacter',
   },
   caseStudy: {
     keyFacts: 'Infos clés',
@@ -78,6 +87,7 @@ export const fr = {
     titleLight: 'Puis améliorer.',
     intro: [
       'Ce qui m’anime, c’est de comprendre comment les choses fonctionnent, puis de les améliorer : l’expérience d’un utilisateur sur un site, un processus interne trop lourd, la façon dont une information circule dans une équipe.',
+      'Concrètement, j’accompagne des projets sur quatre terrains : la création de sites web, le design, le marketing et la communication.',
       'Ma force, c’est ma polyvalence. J’adore apprendre : prendre en main de nouveaux outils, essayer de nouvelles technologies.',
     ],
     photoLabel: 'Photo en grand format',
@@ -91,6 +101,14 @@ export const fr = {
       title: 'Études supérieures',
       mockup: 'Mock-up du diplôme',
     },
+    // Section plus personnelle, avant « En ce moment ». Mêmes photos que sur l'accueil.
+    offscreen: {
+      title: 'Derrière l’écran',
+      paragraphs: [
+        'Je suis basé à Toulouse, dans le Sud-Ouest. J’aime cette ville, et la région qui va avec : la montagne n’est jamais loin, la nature non plus.',
+        'Quand je ne suis pas derrière un écran, on me trouve en montagne, au bord de la mer, ou au stade avec le Stade Toulousain.',
+      ],
+    },
     culture: {
       title: 'En ce moment',
       carousel: 'Carrousel culture',
@@ -103,7 +121,7 @@ export const fr = {
   lab: {
     metaTitle: 'Labo',
     title: 'Labo',
-    intro: 'Des essais, des expérimentations, des projets en cours de route : ce que je fabrique pour apprendre.',
+    intro: 'Des essais, des expérimentations, des projets en cours de route.',
     open: (title: string) => `Agrandir : ${title}`,
     viewer: 'Visionneuse',
     close: 'Fermer',
@@ -111,7 +129,6 @@ export const fr = {
     next: 'Suivant',
   },
   contact: {
-    label: 'Contact',
     titleStrong: 'Un projet en tête ?',
     titleLight: 'Parlons-en.',
     text: 'Une idée, une question, une mission : écrivez-moi.',
