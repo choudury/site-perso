@@ -1,7 +1,7 @@
 ---
 /*
  * Carte cliquable pour écrire : photo (toujours « en ligne »), adresse mail, délai de réponse et flèche.
- * Utilisée dans le bloc contact et en bas du menu mobile.
+ * Utilisée dans le bloc contact (version foncée) et en bas du menu mobile (version claire).
  */
 import Icon from './ui/Icon.astro';
 import ProfilePhoto from './ProfilePhoto.astro';
@@ -9,29 +9,47 @@ import { site } from '../config/site';
 import { fr } from '../i18n/fr';
 
 interface Props {
+  /** night : sur le bloc gris foncé du contact. light : sur le fond clair de la page. */
+  tone?: 'night' | 'light';
   class?: string;
 }
 
-const { class: className } = Astro.props;
+const { tone = 'night', class: className } = Astro.props;
+
+const styles = {
+  night: {
+    card: 'bg-night-surface text-on-night hover:bg-night-surface-hover',
+    muted: 'text-night-muted',
+    dot: 'bg-online-bright',
+    badge: 'bg-night-surface text-night-muted group-hover:bg-night-surface-hover',
+  },
+  light: {
+    card: 'bg-surface text-ink hover:bg-surface-hover',
+    muted: 'text-muted',
+    dot: 'bg-online',
+    badge: 'bg-surface text-muted group-hover:bg-surface-hover',
+  },
+}[tone];
 ---
 
 <a
   href={`mailto:${site.email}`}
   aria-label={`${fr.contact.emailLabel} ${site.email}`}
   class:list={[
-    'group flex w-full max-w-prose items-center gap-3 rounded-card bg-night-surface p-2 pr-4 text-on-night transition-colors duration-(--duration-base) ease-out hover:bg-night-surface-hover sm:gap-5 sm:p-3 sm:pr-6',
+    'group flex w-full max-w-prose items-center gap-3 rounded-card p-2 pr-4 transition-colors duration-(--duration-base) ease-out sm:gap-5 sm:p-3 sm:pr-6',
+    styles.card,
     className,
   ]}
 >
   <ProfilePhoto
     class="size-12 sm:size-16"
     alwaysOnline
-    dotClass="bg-online-bright"
-    badgeClass="bg-night-surface text-night-muted transition-colors duration-(--duration-base) ease-out group-hover:bg-night-surface-hover"
+    dotClass={styles.dot}
+    badgeClass={`${styles.badge} transition-colors duration-(--duration-base) ease-out`}
   />
   <span class="flex min-w-0 flex-1 flex-col">
     <span class="truncate text-body font-medium sm:text-lead">{site.email}</span>
-    <span class="text-small text-night-muted">{fr.contact.responseTime}</span>
+    <span class:list={['text-small', styles.muted]}>{fr.contact.responseTime}</span>
   </span>
   <Icon
     name="arrow-right"

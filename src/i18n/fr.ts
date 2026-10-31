@@ -30,6 +30,13 @@ export const fr = {
     currentJob: 'Mon poste actuel',
     roles: 'Rôle',
   },
+  availability: {
+    label: 'Disponibilités',
+    // En deux temps, comme les titres : l'information, puis la précision plus légère.
+    titleStrong: 'J’ai plusieurs heures par semaine pour un nouveau projet.',
+    titleLight: 'De préférence sur ces thèmes :',
+    themes: ['Musique', 'Culture', 'Artisanat', 'Sport', 'Projets locaux à Toulouse et en Occitanie'],
+  },
   caseStudy: {
     keyFacts: 'Infos clés',
     role: 'Rôle',
@@ -70,7 +77,6 @@ export const fr = {
     titleStrong: 'Analyser, comprendre.',
     titleLight: 'Puis améliorer.',
     intro: [
-      'Je vis actuellement à Toulouse, dans le sud de la France. Je suis responsable marketing digital chez SawUp, un organisme de formation spécialisé dans la production musicale. En parallèle, je mène des missions en freelance dans le domaine du digital depuis 2020.',
       'Ce qui m’anime, c’est de comprendre comment les choses fonctionnent, puis de les améliorer : l’expérience d’un utilisateur sur un site, un processus interne trop lourd, la façon dont une information circule dans une équipe.',
       'Ma force, c’est ma polyvalence. J’adore apprendre : prendre en main de nouveaux outils, essayer de nouvelles technologies.',
     ],

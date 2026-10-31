@@ -2,13 +2,14 @@
 /*
  * Sélecteur de la galerie « Derrière l'écran » : un emoji par photo.
  * Au survol (souris) ou au clic, la photo correspondante s'affiche. L'emoji de la photo en cours
- * est marqué d'un point violet en dessous, comme la page active dans le menu ; les autres sont atténués.
+ * est marqué d'un point violet en bas de sa case, comme la page active dans le menu, et remonte un peu ;
+ * les autres sont atténués.
  */
 import Icon from '../ui/Icon.astro';
 import { fr } from '../../i18n/fr';
 ---
 
-<ul class="flex gap-3 pb-3" aria-label={fr.presentation.gallery}>
+<ul class="flex gap-3" aria-label={fr.presentation.gallery}>
   {
     fr.presentation.photos.map((item, index) => (
       <li>
@@ -35,11 +36,18 @@ import { fr } from '../../i18n/fr';
   .gallery-pick[aria-pressed='true'] {
     opacity: 1;
   }
-  /* Point violet sous l'emoji de la photo en cours. */
+  /* L'emoji de la photo en cours remonte pour laisser la place au point. */
+  .gallery-pick > :global(svg) {
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+  .gallery-pick[aria-pressed='true'] > :global(svg) {
+    translate: 0 -0.25rem;
+  }
+  /* Point violet en bas de la case de la photo en cours. */
   .gallery-pick::after {
     content: '';
     position: absolute;
-    bottom: -0.75rem;
+    bottom: 0.375rem;
     left: 50%;
     width: 0.375rem;
     height: 0.375rem;
