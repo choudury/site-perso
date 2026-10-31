@@ -13,6 +13,10 @@ export const fr = {
     open: 'Menu',
     close: 'Fermer',
   },
+  preloader: {
+    // « Bonjour » en occitan, en français puis en anglais, dans cet ordre.
+    hello: ['Bonjorn', 'Bonjour', 'Hello'],
+  },
   brand: {
     logoAlt: 'Logo de Dorian Lala-Clement',
   },

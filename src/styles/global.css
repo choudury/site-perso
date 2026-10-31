@@ -48,6 +48,7 @@
   --color-line: var(--color-neutral-200);
   --color-ink: var(--color-neutral-950);
   --color-muted: var(--color-neutral-600);
+  --color-faint: var(--color-neutral-400); /* texte décoratif très discret (écran de chargement) */
   --color-on-accent: #ffffff;
 
   /* Bloc gris foncé (section contact). */

@@ -1,14 +1,22 @@
 ---
 /*
- * Écran de chargement : fond gris, le logo se compose en quatre temps.
+ * Écran de chargement : fond gris, le logo se compose en quatre temps pendant que « bonjour »
+ * défile dessous en occitan, en français puis en anglais. Le tout est centré à l'écran.
  * Affiché une seule fois par visite (mémoire de session), jamais quand le visiteur
  * demande moins d'animations, ni sans JavaScript (voir le script en tête de BaseLayout).
  */
 import logo from '../assets/logo.svg?raw';
+import { fr } from '../i18n/fr';
 ---
 
 <div class="preloader fixed inset-0 z-50 place-items-center bg-surface text-ink" data-preloader aria-hidden="true">
-  <div class="size-16 md:size-20" set:html={logo} />
+  <div class="flex flex-col items-center gap-6">
+    <div class="size-16 md:size-20" data-preloader-logo set:html={logo} />
+    <!-- Les trois mots sont superposés dans la même case ; un seul est visible à la fois. -->
+    <div class="grid text-body text-faint">
+      {fr.preloader.hello.map((word) => <span class="preloader-word col-start-1 row-start-1 text-center">{word}</span>)}
+    </div>
+  </div>
 </div>
 
 <style>
@@ -27,7 +35,8 @@ import logo from '../assets/logo.svg?raw';
     height: 100%;
   }
   /* Les formes restent invisibles jusqu'à ce que l'animation les fasse apparaître. */
-  .preloader :global(path) {
+  .preloader :global(path),
+  .preloader-word {
     opacity: 0;
   }
 </style>
@@ -48,14 +57,23 @@ import logo from '../assets/logo.svg?raw';
       sessionStorage.setItem('preload-vu', '1');
     } catch {}
 
+    // Chaque mot monte légèrement en fondu, puis laisse la place au suivant ; le dernier reste.
+    const words = gsap.utils.toArray<HTMLElement>('.preloader-word', preloader);
+    const hello = gsap.timeline();
+    words.forEach((word, index) => {
+      hello.fromTo(word, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.25, ease: 'power2.out' });
+      if (index < words.length - 1) hello.to(word, { y: -8, opacity: 0, duration: 0.2, ease: 'power2.in' }, '+=0.15');
+    });
+
     gsap
       .timeline({
         delay: 0.15,
         onComplete: () => preloader.remove(),
       })
-      .add(logoReveal(preloader))
+      .add(logoReveal(preloader.querySelector('[data-preloader-logo]')!))
+      .add(hello, 0)
       // Le hero commence à s'animer pendant que l'écran de chargement s'efface.
-      .add(finishPreload, '+=0.25')
+      .add(finishPreload, '+=0.3')
       .to(preloader, { autoAlpha: 0, duration: 0.6, ease: 'power2.inOut' }, '<');
   }
 </script>
