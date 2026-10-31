@@ -1,6 +1,6 @@
 ---
 /*
- * Grande photo de la section « Derrière l'écran ». Les photos se relaient en fondu ;
+ * Grande photo de la section « Derrière l'écran ». Les photos se relaient comme un carrousel ;
  * le sélecteur d'emojis (GalleryPicker), placé au-dessus du titre, choisit celle qui s'affiche.
  */
 import type { ImageMetadata } from 'astro';
@@ -47,13 +47,13 @@ const RATIO = '5 / 4';
 </div>
 
 <style>
-  /* Une seule photo visible ; la suivante apparaît en fondu. */
+  /* Une seule photo visible, plus celle qui sort pendant le glissement (lib/photo-gallery.ts). */
   .gallery-slide {
-    opacity: 0;
-    transition: opacity var(--duration-slow) var(--ease-in-out);
+    visibility: hidden;
   }
-  .gallery-slide[data-active] {
-    opacity: 1;
+  .gallery-slide[data-active],
+  .gallery-slide[data-leaving] {
+    visibility: visible;
   }
 </style>
 

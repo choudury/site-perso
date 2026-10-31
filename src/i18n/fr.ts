@@ -67,19 +67,19 @@ export const fr = {
   about: {
     metaTitle: 'À propos',
     // Titre en deux temps, comme l'accroche de l'accueil : une affirmation, puis la suite plus légère.
-    titleStrong: 'Comprendre comment ça fonctionne.',
-    titleLight: 'Puis l’améliorer.',
+    titleStrong: 'Analyser, comprendre.',
+    titleLight: 'Puis améliorer.',
     intro: [
-      'Je m’appelle Dorian Lala-Clement, je vis et je travaille à Toulouse. Je suis responsable marketing numérique chez SawUp, une école en ligne de production musicale, où je suis arrivé en alternance en 2021.',
+      'Je vis actuellement à Toulouse, dans le sud de la France. Je suis responsable marketing digital chez SawUp, un organisme de formation spécialisé dans la production musicale. En parallèle, je mène des missions en freelance dans le domaine du digital depuis 2020.',
       'Ce qui m’anime, c’est de comprendre comment les choses fonctionnent, puis de les améliorer : l’expérience d’un utilisateur sur un site, un processus interne trop lourd, la façon dont une information circule dans une équipe.',
-      'C’est ce qui m’a fait passer du graphisme au web, puis à l’acquisition et à l’automatisation. En parallèle, je mène des missions en freelance depuis 2020 : identités visuelles, supports de communication, sites web.',
-      'Et je continue d’apprendre, par curiosité autant que par méthode.',
+      'Ma force, c’est ma polyvalence. J’adore apprendre : prendre en main de nouveaux outils, essayer de nouvelles technologies.',
     ],
     photoLabel: 'Photo en grand format',
     experience: {
       title: 'Parcours professionnel',
       current: 'Aujourd’hui',
       today: 'aujourd’hui',
+      sticker: (company: string) => `Sticker ${company}`,
     },
     education: {
       title: 'Études supérieures',

@@ -10,11 +10,27 @@ const lightWords = fr.hero.titleLight.split(' ');
 const lastLight = lightWords.pop();
 ---
 
-<section data-hero class="mx-auto max-w-site px-gutter pt-5 md:pt-8">
+<section data-hero class="relative mx-auto max-w-site px-gutter pt-5 md:pt-8">
+  <!-- Fond : quelques filets verticaux très clairs, qui s'effacent en haut et en bas.
+       De temps en temps, un trait violet descend le long de l'un d'eux. -->
+  <div class="hero-lines pointer-events-none absolute inset-x-0 top-0 -bottom-24 px-gutter" aria-hidden="true">
+    <div class="grid h-full grid-cols-2 md:grid-cols-4">
+      {
+        [1, 2, 3].map((line) => (
+          <span class:list={['relative border-r border-line', line !== 1 && 'max-md:hidden']} data-hero-line>
+            <span class="hero-spark" style={`--line: ${line}`} />
+          </span>
+        ))
+      }
+    </div>
+  </div>
+
   <SiteHeader />
 
-  <div class="flex flex-col gap-8 pt-section md:gap-10">
-    <h1 class="text-display">
+  <div class="relative flex flex-col gap-8 pt-section md:gap-10">
+    <!-- Retrait de 0,05 em : la courbe du « C » laisse un blanc à gauche du glyphe. On le compense
+         pour que le titre s'aligne à l'œil sur la photo et sur le drapeau. -->
+    <h1 class="-ml-[0.05em] text-display">
       <span class="font-medium md:block">
         {
           strongWords.map((word) => (
@@ -69,6 +85,44 @@ const lastLight = lightWords.pop();
     display: inline-block;
   }
 
+  /* Les filets s'effacent vers le haut et vers le bas de la zone. */
+  .hero-lines {
+    mask-image: linear-gradient(to bottom, transparent, black 25%, black 60%, transparent);
+  }
+  /* Trait violet qui parcourt un filet de haut en bas, puis attend avant de repartir.
+     Chaque filet a son décalage : les traits ne partent jamais ensemble. */
+  .hero-spark {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 1px;
+    height: 8rem;
+    background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+    opacity: 0;
+    animation: hero-spark 10s var(--ease-in-out) infinite;
+    animation-delay: calc(var(--line) * 3s - 1s);
+  }
+  @keyframes hero-spark {
+    0% {
+      translate: 0 -8rem;
+      opacity: 0;
+    }
+    8%,
+    38% {
+      opacity: 0.6;
+    }
+    45%,
+    100% {
+      translate: 0 var(--lines-h, 40rem);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-spark {
+      display: none;
+    }
+  }
+
   /* Tant que l'animation n'est pas prête, le hero reste masqué pour éviter un flash.
      Sécurités : rien n'est masqué sans JavaScript, ni quand le visiteur demande
      moins d’animations, ni au-delà de 4 s si le script tarde (classe js-failsafe). */
@@ -86,6 +140,12 @@ const lastLight = lightWords.pop();
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   const root = document.documentElement;
 
+  // Hauteur des filets, pour que le trait violet les parcoure jusqu'en bas.
+  const lines = hero?.querySelector<HTMLElement>('.hero-lines');
+  if (lines) {
+    new ResizeObserver(() => lines.style.setProperty('--lines-h', `${lines.offsetHeight}px`)).observe(lines);
+  }
+
   // Si la sécurité s'est déjà déclenchée, le hero est affiché : on ne le rejoue pas.
   if (hero && !root.classList.contains('js-failsafe')) {
     const mm = gsap.matchMedia();
@@ -97,9 +157,13 @@ const lastLight = lightWords.pop();
       const accent = hero.querySelector('[data-hero-accent]');
       const time = hero.querySelector('[data-hero-time]');
       const ink = getComputedStyle(hero).color;
+      const heroLines = hero.querySelectorAll('[data-hero-line]');
 
       // La séquence attend la fin de l'écran de chargement pour démarrer.
       const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+
+      // 0. Les filets du fond se tracent de haut en bas.
+      tl.from(heroLines, { scaleY: 0, transformOrigin: 'top', duration: 1.8, stagger: 0.12, ease: 'expo.inOut' }, 0);
 
       // 1. L'en-tête descend légèrement en fondu.
       tl.from(header, { y: -10, autoAlpha: 0, duration: 0.9, stagger: 0.06 }, 0);

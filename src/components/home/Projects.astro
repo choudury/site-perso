@@ -10,10 +10,10 @@ const projects = (await getCollection('projets')).sort((a, b) => a.data.order - 
   <!-- Titre lu par les lecteurs d'écran seulement : les cartes parlent d'elles-mêmes. -->
   <h2 id="projets-titre" class="sr-only">{fr.projects.title}</h2>
 
-  <ul class="grid gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-14">
+  <ul class="grid gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-14" data-projects>
     {
-      projects.map(({ id, data }) => (
-        <li>
+      projects.map(({ id, data }, index) => (
+        <li data-column={index % 2 ? 'right' : 'left'}>
           <Card
             href={`/projets/${id}/`}
             eyebrow={data.name}
@@ -29,3 +29,21 @@ const projects = (await getCollection('projets')).sort((a, b) => a.data.order - 
     }
   </ul>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Parallaxe léger, sur deux colonnes seulement : en arrivant sur la section, les cartes de droite,
+  // un peu plus bas, remontent jusqu'à s'aligner sur celles de gauche ; en continuant de descendre,
+  // elles montent encore un peu pendant que celles de gauche descendent légèrement.
+  gsap.matchMedia().add('(width >= 48rem) and (prefers-reduced-motion: no-preference)', () => {
+    const list = document.querySelector('[data-projects]');
+    if (!list) return;
+    const scrollTrigger = { trigger: list, start: 'top bottom', end: 'bottom top', scrub: 0.6 };
+    gsap.fromTo(list.querySelectorAll('[data-column="right"]'), { y: 80 }, { y: -60, ease: 'none', scrollTrigger });
+    gsap.fromTo(list.querySelectorAll('[data-column="left"]'), { y: -20 }, { y: 30, ease: 'none', scrollTrigger });
+  });
+</script>

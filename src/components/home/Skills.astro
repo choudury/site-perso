@@ -88,9 +88,26 @@ const DESKTOP_ROW = 5;
 
 <script>
   import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const desktopRow = matchMedia('(width >= 40rem)');
+
+  // À l'arrivée sur la section, les groupes apparaissent l'un après l'autre, dans l'ordre :
+  // design, web, acquisition, automatisation.
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.from('.tools-group', {
+      y: 40,
+      autoAlpha: 0,
+      duration: 0.9,
+      ease: 'expo.out',
+      stagger: 0.12,
+      clearProps: 'transform,opacity,visibility',
+      scrollTrigger: { trigger: '.tools-group', start: 'top 85%', once: true },
+    });
+  });
 
   // Un clic n'importe où sur le groupe (ou sur le bouton « + ») le déplie ou le replie :
   // la hauteur de la liste s'anime, et les outils supplémentaires apparaissent un par un.

@@ -73,6 +73,8 @@ const experiences = defineCollection({
     end: z.string().optional(),
     current: z.boolean().default(false),
     summary: z.string(),
+    /** Sticker au logo de l'entreprise, chemin depuis src/assets/ (ex. « stickers/sawup.png »). Desktop seulement. */
+    sticker: z.string().optional(),
   }),
 });
 
