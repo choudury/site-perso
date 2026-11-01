@@ -101,16 +101,18 @@ const dot = 'size-1.5 shrink-0 rounded-full bg-accent';
 
 <!-- Menu mobile déplié : plein écran. À l'ouverture, le logo se compose comme sur l'écran
      de chargement, les liens montent un par un, puis la carte contact et les infos de Toulouse
-     arrivent du bas. -->
+     arrivent du bas. Voile du navigateur (::backdrop) transparent : sinon il assombrit la page
+     pendant les fondus d'ouverture et de fermeture, puis disparaît d'un coup. -->
 <dialog
   id="mobile-menu"
   aria-label={fr.nav.label}
-  class="m-0 h-dvh max-h-none w-full max-w-none bg-page p-0 text-ink md:hidden"
+  class="m-0 h-dvh max-h-none w-full max-w-none bg-page p-0 text-ink backdrop:bg-transparent md:hidden"
 >
   <div class="flex h-full flex-col px-gutter pt-5 pb-10">
     <div class="flex h-12 items-center justify-between">
+      <!-- Décalé de 4 px : la forme du logo le fait paraître plus à gauche que le reste. -->
       <span
-        class="size-8 text-ink [&>svg]:size-full"
+        class="ml-1 size-8 text-ink [&>svg]:size-full"
         role="img"
         aria-label={fr.brand.logoAlt}
         data-menu-logo
@@ -145,7 +147,7 @@ const dot = 'size-1.5 shrink-0 rounded-full bg-accent';
 
     <div class="mt-auto flex flex-col gap-8" data-menu-info>
       <ContactCard tone="light" compact />
-      <LocalInfo class="px-4" />
+      <LocalInfo />
     </div>
   </div>
 </dialog>

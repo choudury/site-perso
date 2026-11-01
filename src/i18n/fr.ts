@@ -35,10 +35,9 @@ export const fr = {
     roles: 'Rôle',
   },
   availability: {
+    // Le badge sert de titre de section.
     status: 'Disponible',
-    // En deux temps, comme les titres : l'envie, puis le temps disponible.
-    titleStrong: 'Partant pour un nouveau projet.',
-    titleLight: 'J’ai du temps à y consacrer, en parallèle de mon poste.',
+    text: 'Partant pour un nouveau projet, en parallèle de mon poste actuel.',
     themesLabel: 'Mes sujets de prédilection',
     themes: [
       'Musique',
@@ -49,8 +48,8 @@ export const fr = {
       'Art et patrimoine',
       'Projets locaux à Toulouse et en Occitanie',
     ],
-    // Variante avec photo : ce qui viendra à l'emplacement de l'image.
-    photoLabel: 'Photo, par exemple Toulouse ou un projet local',
+    // Ce qui viendra à l'emplacement de la vidéo ou du GIF, tant qu'il n'y en a pas.
+    mediaLabel: 'Vidéo ou GIF : les sujets de prédilection en images',
   },
   caseStudy: {
     keyFacts: 'Infos clés',
