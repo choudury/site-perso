@@ -10,10 +10,10 @@ import { fr } from '../i18n/fr';
 ---
 
 <div class="preloader fixed inset-0 z-50 place-items-center bg-surface text-ink" data-preloader aria-hidden="true">
-  <div class="flex flex-col items-center gap-6">
+  <div class="flex flex-col items-center gap-10">
     <div class="size-16 md:size-20" data-preloader-logo set:html={logo} />
     <!-- Les trois mots sont superposés dans la même case ; un seul est visible à la fois. -->
-    <div class="grid text-body text-faint">
+    <div class="grid text-lead text-faint">
       {fr.preloader.hello.map((word) => <span class="preloader-word col-start-1 row-start-1 text-center">{word}</span>)}
     </div>
   </div>

@@ -1,16 +1,16 @@
 ---
-import Button from '../ui/Button.astro';
 import GalleryFrame from './GalleryFrame.astro';
 import GalleryPicker from './GalleryPicker.astro';
 import { fr } from '../../i18n/fr';
 ---
 
-<!-- Desktop : emojis, titre, texte et bouton à gauche, photo à droite.
+<!-- « Derrière l'écran », sur la page À propos, après les études.
+     Desktop : emojis, titre et texte à gauche, photo à droite.
      Mobile : la colonne de gauche s'efface (contents) pour réordonner ses éléments autour de la photo :
-     titre, photo, emojis collés sous la photo, texte, bouton. Les emojis choisissent la photo affichée. -->
+     titre, photo, emojis collés sous la photo, texte. Les emojis choisissent la photo affichée. -->
 <section
   aria-labelledby="presentation-titre"
-  class="mx-auto grid max-w-site px-gutter pt-section lg:grid-cols-12 lg:items-center lg:gap-6"
+  class="mx-auto grid w-full max-w-site px-gutter pt-section lg:grid-cols-12 lg:items-center lg:gap-6"
   data-gallery
 >
   <div class="flex flex-col gap-6 max-lg:contents lg:col-span-5">
@@ -20,12 +20,6 @@ import { fr } from '../../i18n/fr';
     <h2 id="presentation-titre" class="text-h2 font-medium max-lg:order-1">{fr.presentation.title}</h2>
     <div class="flex max-w-prose flex-col gap-4 text-lead font-light text-muted max-lg:order-4 max-lg:mt-6">
       {fr.presentation.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-    </div>
-    <div class="max-lg:order-5 max-lg:mt-6 lg:pt-2">
-      <Button href="/a-propos/" variant="secondary">
-        {fr.presentation.cta}
-        <span aria-hidden="true">→</span>
-      </Button>
     </div>
   </div>
 

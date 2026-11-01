@@ -14,8 +14,8 @@ export const fr = {
     close: 'Fermer',
   },
   preloader: {
-    // « Bonjour » en occitan, en français puis en anglais, dans cet ordre.
-    hello: ['Bonjorn', 'Bonjour', 'Hello'],
+    // « Bonjour » en occitan (Adishatz, salut gascon courant dans le Sud-Ouest), en français puis en anglais.
+    hello: ['Adishatz', 'Bonjour', 'Hello'],
   },
   brand: {
     logoAlt: 'Logo de Dorian Lala-Clement',
@@ -36,19 +36,21 @@ export const fr = {
   },
   availability: {
     status: 'Disponible',
-    // En deux temps, comme les titres : l'information, puis la précision plus légère.
-    titleStrong: 'J’ai plusieurs heures par semaine pour accueillir un nouveau projet.',
-    titleLight: 'Mes sujets de prédilection :',
+    // En deux temps, comme les titres : l'envie, puis le temps disponible.
+    titleStrong: 'Partant pour un nouveau projet.',
+    titleLight: 'J’ai du temps à y consacrer, en parallèle de mon poste.',
+    themesLabel: 'Mes sujets de prédilection',
     themes: [
       'Musique',
       'Culture',
-      'Art',
       'Artisanat',
       'Sport',
       'Restauration',
+      'Art et patrimoine',
       'Projets locaux à Toulouse et en Occitanie',
     ],
-    contact: 'Me contacter',
+    // Variante avec photo : ce qui viendra à l'emplacement de l'image.
+    photoLabel: 'Photo, par exemple Toulouse ou un projet local',
   },
   caseStudy: {
     keyFacts: 'Infos clés',
@@ -72,7 +74,6 @@ export const fr = {
       'Je vis et je travaille à Toulouse. Je conçois des sites, je les fais vivre, je fais venir du monde.',
       'Je passe du design au code, puis aux campagnes et aux automatisations. Ce qui relie tout ça : de la rigueur, et l’envie d’apprendre ce que je ne sais pas encore faire.',
     ],
-    cta: 'En savoir plus sur moi',
     // Photos de la galerie, dans l'ordre des fichiers : légende (lue par les lecteurs d'écran)
     // et emoji du sélecteur (nom Fluent Emoji, voir https://icon-sets.iconify.design/fluent-emoji-flat/).
     photos: [
@@ -104,14 +105,6 @@ export const fr = {
     education: {
       title: 'Études supérieures',
       mockup: 'Mock-up du diplôme',
-    },
-    // Section plus personnelle, avant « En ce moment ». Mêmes photos que sur l'accueil.
-    offscreen: {
-      title: 'Derrière l’écran',
-      paragraphs: [
-        'Je suis basé à Toulouse, dans le Sud-Ouest. J’aime cette ville, et la région qui va avec : la montagne n’est jamais loin, la nature non plus.',
-        'Quand je ne suis pas derrière un écran, on me trouve en montagne, au bord de la mer, ou au stade avec le Stade Toulousain.',
-      ],
     },
     culture: {
       title: 'En ce moment',

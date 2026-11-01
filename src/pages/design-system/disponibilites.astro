@@ -1,0 +1,30 @@
+---
+/*
+ * Page interne (non indexée, comme /design-system/) : les trois mises en page proposées
+ * pour la section « Disponible » de l'accueil, l'une sous l'autre, chacune suivie du bloc contact
+ * pour juger l'enchaînement. À supprimer une fois la variante choisie.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Availability from '../../components/home/Availability.astro';
+import Contact from '../../components/Contact.astro';
+
+const variants = [
+  { id: 'editorial', label: 'A — Éditorial : grand titre à gauche, sujets en badges à droite' },
+  { id: 'photo', label: 'B — Avec photo : texte et badges à gauche, image à droite' },
+  { id: 'liste', label: 'C — Liste : les sujets écrits en toutes lettres' },
+] as const;
+---
+
+<BaseLayout title="Disponible — propositions" description="Propositions de mise en page.">
+  <main class="pb-section">
+    {
+      variants.map((variant) => (
+        <div class="pt-section">
+          <p class="mx-auto max-w-site px-gutter text-small font-medium text-accent">{variant.label}</p>
+          <Availability variant={variant.id} />
+        </div>
+      ))
+    }
+    <Contact />
+  </main>
+</BaseLayout>
