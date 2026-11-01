@@ -3,10 +3,11 @@
  * Disponibilités, entre « Ma boîte à outils » et le bloc contact : sans boîte ni fond, pour faire
  * respirer la page entre les cartes d'outils et la grande carte contact.
  * Le badge foncé « Disponible » sert de titre ; dessous, une phrase en gris et les sujets de
- * prédilection écrits en toutes lettres. À droite, une vidéo courte ou un GIF.
+ * prédilection en badges. À droite, une vidéo courte ou un GIF.
  * Les textes sont dans fr.availability.
  */
 import Placeholder from '../ui/Placeholder.astro';
+import Tag from '../ui/Tag.astro';
 import { fr } from '../../i18n/fr';
 
 const t = fr.availability;
@@ -26,25 +27,19 @@ const RATIO = '4 / 5';
 
 <section aria-labelledby="disponibilites-titre" class="mx-auto w-full max-w-site px-gutter pt-section">
   <div class="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-6">
-    <div class="flex flex-col items-start gap-8 lg:col-span-7">
-      <h2 id="disponibilites-titre" class="availability-badge text-h2 font-medium">
+    <div class="flex flex-col items-start gap-8 lg:col-span-6">
+      <h2 id="disponibilites-titre" class="availability-badge text-h3">
         <span class="availability-dot" aria-hidden="true"></span>
         {t.status}
       </h2>
       <p class="max-w-prose text-h3 font-light text-balance text-muted">{t.text}</p>
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-4">
         <p class="text-small font-medium text-muted">{t.themesLabel}</p>
-        {/* Les sujets en toutes lettres, séparés par des points médians. */}
-        <ul class="flex flex-wrap gap-x-3 gap-y-1 text-h3 font-light">
+        <ul class="flex flex-wrap gap-2">
           {
-            t.themes.map((theme, index) => (
-              <li class="flex gap-3">
-                {theme}
-                {index < t.themes.length - 1 && (
-                  <span class="text-placeholder" aria-hidden="true">
-                    ·
-                  </span>
-                )}
+            t.themes.map((theme) => (
+              <li>
+                <Tag size="lg">{theme}</Tag>
               </li>
             ))
           }
@@ -52,7 +47,7 @@ const RATIO = '4 / 5';
       </div>
     </div>
 
-    <div class="overflow-hidden rounded-card lg:col-span-4 lg:col-start-9" style={`aspect-ratio: ${RATIO}`}>
+    <div class="overflow-hidden rounded-card lg:col-span-5 lg:col-start-8" style={`aspect-ratio: ${RATIO}`}>
       {
         mediaUrl && isVideo ? (
           <video
@@ -76,13 +71,14 @@ const RATIO = '4 / 5';
 </section>
 
 <style>
-  /* Badge foncé « Disponible », à la taille d'un titre de section. Ses marges et son voyant
-     sont en em pour suivre la taille du texte. Le halo du voyant s'élargit en boucle. */
+  /* Badge foncé « Disponible », qui sert de titre : plus grand que le texte courant mais en graisse
+     normale, avec de l'air autour du mot. Marges et voyant en em pour suivre la taille du texte.
+     Le halo du voyant s'élargit en boucle. */
   .availability-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.35em;
-    padding: 0.18em 0.6em 0.22em 0.45em;
+    gap: 0.5em;
+    padding: 0.35em 0.9em 0.38em 0.7em;
     border-radius: var(--radius-full);
     background: var(--color-ink);
     color: var(--color-on-night);
