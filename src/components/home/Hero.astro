@@ -11,13 +11,13 @@ const lastLight = lightWords.pop();
 ---
 
 <section data-hero class="relative mx-auto max-w-site px-gutter pt-5 md:pt-8">
-  <!-- Fond : quelques filets verticaux très clairs (un seul sur mobile), qui commencent sous le menu
+  <!-- Fond : quelques filets verticaux très clairs (desktop seulement), qui commencent sous le menu
        et s'effacent en haut et en bas. De temps en temps, un trait violet descend le long de l'un d'eux. -->
-  <div class="hero-lines pointer-events-none absolute inset-x-0 top-24 -bottom-24 px-gutter md:top-32" aria-hidden="true">
-    <div class="grid h-full grid-cols-2 md:grid-cols-5">
+  <div class="hero-lines pointer-events-none absolute inset-x-0 top-24 -bottom-24 px-gutter max-md:hidden md:top-32" aria-hidden="true">
+    <div class="grid h-full grid-cols-5">
       {
         [1, 2, 3, 4].map((line) => (
-          <span class:list={['relative border-r border-line', line !== 1 && 'max-md:hidden']} data-hero-line>
+          <span class="relative border-r border-line" data-hero-line>
             <span class="hero-spark" style={`--line: ${line}`} />
           </span>
         ))

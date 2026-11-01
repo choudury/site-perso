@@ -1,6 +1,6 @@
 ---
 /*
- * Disponibilités, juste sous les projets : un voyant vert qui pulse, le temps libre pour
+ * Disponibilités, juste sous les projets : un badge foncé avec un voyant vert qui pulse, le temps libre pour
  * un nouveau projet, les thèmes privilégiés et un lien vers le bloc contact.
  * Les textes sont dans fr.availability.
  */
@@ -10,8 +10,10 @@ import { fr } from '../../i18n/fr';
 
 <section aria-labelledby="disponibilites-titre" class="mx-auto w-full max-w-site px-gutter pt-16 md:pt-24">
   <div class="flex flex-col gap-6">
-    <p class="flex items-center gap-3 text-body font-medium">
-      <span class="availability-dot relative size-2.5 rounded-full bg-online" aria-hidden="true"></span>
+    <p
+      class="inline-flex items-center gap-2.5 self-start rounded-full bg-ink py-1.5 pr-3.5 pl-3 text-small font-medium text-on-night"
+    >
+      <span class="availability-dot relative size-2 rounded-full bg-online-bright" aria-hidden="true"></span>
       {fr.availability.status}
     </p>
     <h2 id="disponibilites-titre" class="text-h3">
@@ -27,9 +29,10 @@ import { fr } from '../../i18n/fr';
         ))
       }
     </ul>
+    <!-- Texte calé sur celui des badges (même retrait de 16 px). -->
     <a
       href="#contact"
-      class="group inline-flex items-center gap-2 self-start text-body font-medium text-muted transition-colors duration-(--duration-fast) ease-out hover:text-accent"
+      class="group inline-flex items-center gap-2 self-start pl-4 text-body font-medium text-muted transition-colors duration-(--duration-fast) ease-out hover:text-accent"
     >
       {fr.availability.contact}
       <span

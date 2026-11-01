@@ -38,7 +38,7 @@ export const fr = {
     status: 'Disponible',
     // En deux temps, comme les titres : l'information, puis la précision plus légère.
     titleStrong: 'J’ai plusieurs heures par semaine pour accueillir un nouveau projet.',
-    titleLight: 'De préférence sur les thèmes suivants :',
+    titleLight: 'Mes sujets de prédilection :',
     themes: [
       'Musique',
       'Culture',
