@@ -3,7 +3,8 @@
  * Le site est statique : sans ce script, ces valeurs resteraient figées à l'heure du déploiement.
  *
  * La météo vient d'Open-Meteo (gratuit, sans clé ni cookie). Elle est gardée 15 minutes
- * en mémoire de session pour ne pas refaire la demande à chaque page.
+ * en mémoire de session pour ne pas refaire la demande à chaque page. Si le service ne répond pas,
+ * la dernière météo connue de moins de 3 heures (gardée dans le navigateur) s'affiche à la place.
  */
 import { site } from '../config/site';
 import { fr } from '../i18n/fr';
@@ -14,6 +15,8 @@ type Weather = { temperature: number; code: number; sunrise: string; sunset: str
 
 const CACHE_KEY = 'meteo-toulouse';
 const CACHE_DURATION = 15 * 60_000;
+const FALLBACK_KEY = 'meteo-toulouse-secours';
+const FALLBACK_DURATION = 3 * 60 * 60_000;
 
 let weather: Weather | null = null;
 
@@ -72,17 +75,19 @@ function render() {
   });
 }
 
-function readCache(): Weather | null {
+function readCache(storage: 'sessionStorage' | 'localStorage', key: string, duration: number): Weather | null {
   try {
-    const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) ?? 'null');
-    return cached && Date.now() - cached.savedAt < CACHE_DURATION ? cached.weather : null;
+    const cached = JSON.parse(window[storage].getItem(key) ?? 'null');
+    return cached && Date.now() - cached.savedAt < duration ? cached.weather : null;
   } catch {
     return null;
   }
 }
 
+let retried = false;
+
 async function loadWeather() {
-  weather = readCache();
+  weather = readCache('sessionStorage', CACHE_KEY, CACHE_DURATION);
   if (weather) return render();
 
   const { latitude, longitude } = site.coordinates;
@@ -100,11 +105,21 @@ async function loadWeather() {
       sunset: data.daily.sunset[0],
     };
     try {
-      sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), weather }));
+      const saved = JSON.stringify({ savedAt: Date.now(), weather });
+      sessionStorage.setItem(CACHE_KEY, saved);
+      localStorage.setItem(FALLBACK_KEY, saved);
     } catch {}
     render();
   } catch {
-    // Service indisponible : la météo reste simplement masquée.
+    // Service indisponible : dernière météo connue si elle est récente, sinon la météo reste masquée.
+    weather = readCache('localStorage', FALLBACK_KEY, FALLBACK_DURATION);
+    if (weather) render();
+    // Une seule nouvelle tentative, 20 s plus tard, pour ne pas perdre la météo
+    // sur un simple raté de réseau (mobile notamment).
+    if (!retried) {
+      retried = true;
+      setTimeout(loadWeather, 20_000);
+    }
   }
 }
 

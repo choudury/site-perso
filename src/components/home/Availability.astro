@@ -28,14 +28,16 @@ const RATIO = '4 / 5';
 <section aria-labelledby="disponibilites-titre" class="mx-auto w-full max-w-site px-gutter pt-section">
   <div class="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-6">
     <div class="flex flex-col items-start gap-8 lg:col-span-7">
-      <h2 id="disponibilites-titre" class="availability-badge text-lead">
+      <!-- Mobile : badge et phrase un cran plus grands, pour occuper la largeur de l'écran. -->
+      <h2 id="disponibilites-titre" class="availability-badge text-h3 lg:text-lead">
         <span class="availability-dot" aria-hidden="true"></span>
         {t.status}
       </h2>
-      <!-- En deux tons, comme les titres du site : l'essentiel en noir, la précision en gris. -->
-      <p class="text-h2 text-balance">
-        <span class="block font-medium">{t.textStrong}</span>
-        <span class="block font-light text-muted">{t.textLight}</span>
+      <!-- En deux tons, comme les titres du site : l'essentiel en noir, la précision en gris.
+           Les deux parties s'enchaînent sur les mêmes lignes, équilibrées entre elles. -->
+      <p class="text-h1 text-balance lg:text-h2">
+        <span class="font-medium">{t.textStrong}</span>{' '}
+        <span class="font-light text-muted">{t.textLight}</span>
       </p>
       <div class="flex flex-col gap-4">
         <p class="text-small font-medium text-muted">{t.themesLabel}</p>
@@ -89,8 +91,8 @@ const RATIO = '4 / 5';
   }
   .availability-dot {
     position: relative;
-    width: 0.28em;
-    height: 0.28em;
+    width: 0.4em;
+    height: 0.4em;
     border-radius: var(--radius-full);
     background: var(--color-online-bright);
   }
@@ -108,7 +110,7 @@ const RATIO = '4 / 5';
       opacity: 0.6;
     }
     to {
-      scale: 2.6;
+      scale: 2.4;
       opacity: 0;
     }
   }
