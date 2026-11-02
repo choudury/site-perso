@@ -37,7 +37,8 @@ export const fr = {
   availability: {
     // Le badge sert de titre de section.
     status: 'Disponible',
-    text: 'Partant pour un nouveau projet, en parallèle de mon poste actuel.',
+    textStrong: 'Partant pour de nouvelles missions,',
+    textLight: 'en parallèle de mon poste actuel.',
     themesLabel: 'Mes sujets de prédilection',
     themes: [
       'Musique',
