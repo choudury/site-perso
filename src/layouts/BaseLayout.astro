@@ -18,6 +18,9 @@ const { title, description = '', noindex = false } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <!-- Favicon : le SVG passe en clair quand le navigateur est en thème sombre ; le .ico sert aux anciens navigateurs. -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <!-- Signale que JavaScript est actif (les animations peuvent masquer leurs éléments de départ).
          L'écran de chargement est sauté s'il a déjà été vu pendant la visite ou si le visiteur demande
          moins d'animations. Sécurité : tout s'affiche si les scripts n'ont pas pris la main en 4 s. -->
