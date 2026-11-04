@@ -20,7 +20,8 @@ const { tone = 'night', compact = false, class: className } = Astro.props;
 
 const styles = {
   night: {
-    card: 'bg-night-surface text-on-night hover:bg-night-surface-hover',
+    // Curseur enveloppe au lieu de la main : la carte ouvre un mail.
+    card: 'bg-night-surface text-on-night hover:bg-night-surface-hover cursor-(--cursor-mail)',
     muted: 'text-night-muted',
     dot: 'bg-online-bright',
     badge: 'bg-night-surface text-night-muted group-hover:bg-night-surface-hover',

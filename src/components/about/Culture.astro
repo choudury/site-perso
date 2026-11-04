@@ -21,7 +21,7 @@ const covers = import.meta.glob<{ default: ImageMetadata }>('/src/assets/culture
 const coverFor = (path?: string) => (path ? covers[`/src/assets/${path}`]?.default : undefined);
 
 const arrowClass =
-  'grid size-11 place-items-center rounded-control bg-surface text-ink transition-colors duration-(--duration-fast) ease-out hover:bg-surface-hover disabled:cursor-default disabled:text-neutral-400 disabled:hover:bg-surface';
+  'grid size-11 place-items-center rounded-control bg-surface text-ink transition-colors duration-(--duration-fast) ease-out hover:bg-surface-hover disabled:text-neutral-400 disabled:hover:bg-surface';
 ---
 
 <section

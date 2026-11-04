@@ -143,6 +143,20 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Curseurs du site (public/curseur.svg et curseur-lien.svg), les chiffres situent la pointe.
+       --cursor-lien sert aussi aux éléments cliquables qui ne sont pas des liens. */
+    --cursor-lien: url('/curseur-lien.svg') 12 1, pointer;
+    --cursor-mail: url('/curseur-mail.svg') 16 16, pointer; /* enveloppe, carte contact */
+    cursor: url('/curseur.svg') 4 5, auto;
+  }
+
+  /* Le navigateur impose la flèche système aux boutons : ils reprennent celle du site. */
+  button {
+    cursor: inherit;
+  }
+
+  a[href] {
+    cursor: var(--cursor-lien);
   }
 
   body {
