@@ -73,8 +73,9 @@ const experiences = defineCollection({
     end: z.string().optional(),
     current: z.boolean().default(false),
     summary: z.string(),
-    /** Sticker au logo de l'entreprise, chemin depuis src/assets/ (ex. « stickers/sawup.png »). Desktop seulement. */
-    sticker: z.string().optional(),
+    /** Logo de l'entreprise en petit avatar carré arrondi devant son nom, chemin depuis src/assets/ (ex. « logos/sawup.svg »).
+        Absent : pastille grise en attendant. */
+    logo: z.string().optional(),
   }),
 });
 
@@ -83,9 +84,15 @@ const formations = defineCollection({
   schema: z.object({
     order: z.number(),
     title: z.string(),
+    /** Établissement (ex. « Université de Toulouse »). */
     school: z.string(),
-    /** Année d'obtention du diplôme. */
-    year: z.string(),
+    /** Lieu des cours, affiché sous l'intitulé (ex. « IUT de Castres »). */
+    location: z.string(),
+    /** Années de début et de fin de la formation. */
+    start: z.string(),
+    end: z.string(),
+    /** Photo du campus, chemin depuis src/assets/ (ex. « campus/iut-castres.webp ») ; apparaît au survol. */
+    campus: z.string().optional(),
     detail: z.string().optional(),
     /** Visuel du diplôme, chemin depuis src/assets/ (ex. « diplomes/master.jpg »). */
     mockup: z.string().optional(),

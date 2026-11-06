@@ -1,21 +1,23 @@
 ---
 /*
- * Études supérieures : une carte par diplôme, avec la place pour un mock-up du diplôme,
- * puis l'année, l'école et l'intitulé en texte courant. Ambiance distincte de la frise du parcours.
+ * Études supérieures : une carte par diplôme, avec le mock-up du diplôme (et une photo du campus
+ * qui apparaît au survol), puis les années, l'intitulé, le lieu des cours et une courte description. Ambiance distincte de la frise du parcours.
  */
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import Icon from '../ui/Icon.astro';
 import Placeholder from '../ui/Placeholder.astro';
 import { fr } from '../../i18n/fr';
 
 const formations = (await getCollection('formations')).sort((a, b) => a.data.order - b.data.order);
 
-// Les mock-ups sont rangés dans src/assets/diplomes/ et désignés par leur nom dans formations.yaml.
-const mockups = import.meta.glob<{ default: ImageMetadata }>('/src/assets/diplomes/*.{jpg,jpeg,png,webp}', {
+// Les mock-ups (la feuille seule, droite) sont rangés dans src/assets/diplomes/ et désignés dans formations.yaml.
+// Les photos de campus, dans src/assets/campus/.
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/{diplomes,campus}/*.{jpg,jpeg,png,webp}', {
   eager: true,
 });
-const mockupFor = (path?: string) => (path ? mockups[`/src/assets/${path}`]?.default : undefined);
+const imageFor = (path?: string) => (path ? images[`/src/assets/${path}`]?.default : undefined);
 ---
 
 <section aria-labelledby="formations-titre" class="mx-auto w-full max-w-site px-gutter pt-section">
@@ -24,25 +26,52 @@ const mockupFor = (path?: string) => (path ? mockups[`/src/assets/${path}`]?.def
   <ul class="mt-10 grid gap-4 md:mt-14 md:grid-cols-3 md:gap-6">
     {
       formations.map(({ data }) => {
-        const mockup = mockupFor(data.mockup);
+        const mockup = imageFor(data.mockup);
+        const campus = imageFor(data.campus);
         return (
-          <li class="flex flex-col overflow-hidden rounded-card bg-surface">
-            {mockup ? (
-              <Image
-                src={mockup}
-                alt={`${fr.about.education.mockup} : ${data.title}`}
-                widths={[480, 800]}
-                sizes="(min-width: 48rem) 33vw, 100vw"
-                class="aspect-4/3 w-full object-cover"
-              />
-            ) : (
-              <Placeholder label={fr.about.education.mockup} ratio="4 / 3" class="rounded-none" />
-            )}
+          <li class="group flex flex-col overflow-hidden rounded-card bg-surface">
+            <div class="relative">
+              {/* Le diplôme sort de derrière le texte de la carte en montant au fil du défilement
+                  (voir le script), et s'avance un peu au survol. */}
+              {mockup ? (
+                <div class="relative grid aspect-4/3 place-items-center overflow-hidden bg-surface-hover" data-diploma-frame>
+                  {/* Deux niveaux : GSAP déplace le conteneur (il neutralise scale sur ce qu'il anime),
+                      le zoom au survol reste sur l'image. */}
+                  <div class="w-3/4" data-diploma>
+                    <Image
+                      src={mockup}
+                      alt={`${fr.about.education.mockup} : ${data.title}, ${data.school}`}
+                      widths={[600, 1180]}
+                      sizes="(min-width: 48rem) 25vw, 75vw"
+                      class="h-auto w-full transition-[scale] duration-(--duration-slow) ease-out group-hover:scale-105"
+                    />
+                  </div>
+                  {/* Photo du campus : attend sous le cadre, de travers, et monte à mi-course au survol
+                      de la carte, par-dessus le diplôme ; son bas reste coupé par le cadre.
+                      Décorative, et absente sans souris. */}
+                  {campus && (
+                    <Image
+                      src={campus}
+                      alt=""
+                      width={240}
+                      densities={[1, 2]}
+                      class="absolute right-[12%] -bottom-[14%] aspect-4/3 w-[42%] translate-y-[100%] rotate-6 rounded-control border-4 border-page object-cover transition-transform delay-75 duration-(--duration-slow) ease-out group-hover:translate-y-0"
+                    />
+                  )}
+                </div>
+              ) : (
+                <Placeholder label={fr.about.education.mockup} ratio="4 / 3" class="rounded-none" />
+              )}
+            </div>
             <div class="flex flex-col gap-2 p-5 sm:p-6">
               <p class="text-small font-medium text-muted tabular-nums">
-                {data.year} · {data.school}
+                {data.start} — {data.end}
               </p>
               <h3 class="text-body font-medium">{data.title}</h3>
+              <p class="flex items-center gap-1.5 text-small">
+                <Icon name="map-pin" class="size-4 text-muted" />
+                {data.location}
+              </p>
               {data.detail && <p class="text-small text-muted">{data.detail}</p>}
             </div>
           </li>
@@ -51,3 +80,27 @@ const mockupFor = (path?: string) => (path ? mockups[`/src/assets/${path}`]?.def
     }
   </ul>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Au défilement vers le bas, chaque diplôme monte depuis le bas de son cadre (à moitié caché
+  // derrière le texte de la carte) jusqu'à sa place, atteinte quand le cadre passe aux deux tiers
+  // de l'écran environ, puis continue de monter à peine jusqu'à sortir de l'écran. Mouvement
+  // régulier et lissé, qui suit le défilement dans les deux sens.
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    document.querySelectorAll<HTMLElement>('[data-diploma-frame]').forEach((frame) => {
+      const diploma = frame.querySelector<HTMLElement>('[data-diploma]');
+      if (!diploma) return;
+      gsap
+        .timeline({
+          scrollTrigger: { trigger: frame, start: 'top bottom', end: 'bottom top', scrub: 1.2 },
+        })
+        .fromTo(diploma, { yPercent: 45 }, { yPercent: 0, ease: 'sine.out', duration: 0.45 })
+        .to(diploma, { yPercent: -4, ease: 'none', duration: 0.55 });
+    });
+  });
+</script>

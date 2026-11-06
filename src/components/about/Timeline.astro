@@ -1,7 +1,7 @@
 ---
 /*
  * Parcours professionnel en frise chronologique : un point par poste, reliés par un filet fin.
- * Sur grand écran, un sticker au logo de l'entreprise se place à droite de chaque poste.
+ * Le nom de l'entreprise est précédé d'un petit avatar carré gris aux angles arrondis, à son logo en noir.
  */
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
@@ -11,18 +11,27 @@ import { fr } from '../../i18n/fr';
 
 const experiences = (await getCollection('experiences')).sort((a, b) => a.data.order - b.data.order);
 
-// Les stickers sont rangés dans src/assets/stickers/ et désignés par leur nom dans experiences.yaml.
-const stickers = import.meta.glob<{ default: ImageMetadata }>('/src/assets/stickers/*.{png,webp,svg}', {
+// Les logos sont rangés dans src/assets/logos/ (le mien : src/assets/logo.svg) et désignés dans experiences.yaml.
+// Un SVG est inséré tel quel pour prendre la couleur du texte (currentColor) ; une image doit être fournie en noir.
+const svgLogos = import.meta.glob<string>(['/src/assets/logo.svg', '/src/assets/logos/*.svg'], {
+  query: '?raw',
+  import: 'default',
   eager: true,
 });
-const stickerFor = (path?: string) => (path ? stickers[`/src/assets/${path}`]?.default : undefined);
+const imageLogos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/logos/*.{png,webp}', { eager: true });
+const logoFor = (path?: string) => {
+  const key = `/src/assets/${path}`;
+  return path ? { svg: svgLogos[key], image: imageLogos[key]?.default } : {};
+};
 
-// En attendant les vrais stickers : une forme et une inclinaison différentes pour chaque poste.
-const placeholderShapes = [
-  'size-32 rounded-full -rotate-6',
-  'h-28 w-40 rounded-card rotate-3',
-  'h-24 w-44 rounded-full -rotate-2',
-];
+// Réglages optiques des logos SVG : centrés et à la même taille, ils ne paraissent pas équilibrés.
+// Le mien, plein, penche à droite (poussé d'un demi-pixel à gauche). Ceux de SawUp et des Spartiates,
+// plus épurés, paraissent plus petits à taille égale : ils sont agrandis (12 et 13 px au lieu de 10).
+const opticalFit: Record<string, string> = {
+  'logo.svg': '[&_svg]:size-2.5 [&_svg]:-translate-x-[0.5px]',
+  'logos/les-spartiates.svg': '[&_svg]:size-3.25',
+  'logos/sawup.svg': '[&_svg]:size-3',
+};
 ---
 
 <section aria-labelledby="parcours-titre" class="mx-auto w-full max-w-site px-gutter pt-section">
@@ -30,10 +39,10 @@ const placeholderShapes = [
 
   <!-- Les colonnes sont partagées par toutes les lignes (subgrid) : la colonne des dates prend
        la largeur de la plus longue et commence au bord gauche, sous le titre. -->
-  <ol class="mt-10 grid grid-cols-[1.5rem_1fr] gap-x-4 md:mt-14 md:grid-cols-[max-content_1.5rem_1fr] md:gap-x-8 lg:grid-cols-[max-content_1.5rem_1fr_auto]">
+  <ol class="mt-10 grid grid-cols-[1.5rem_1fr] gap-x-4 md:mt-14 md:grid-cols-[max-content_1.5rem_1fr] md:gap-x-8">
     {
       experiences.map(({ data }, index) => {
-        const sticker = stickerFor(data.sticker);
+        const logo = logoFor(data.logo);
         return (
           <li class="col-span-full grid grid-cols-subgrid">
             {/* Dates : à gauche sur desktop, au-dessus du poste sur mobile. */}
@@ -54,26 +63,23 @@ const placeholderShapes = [
                 {data.role}
                 {data.current && <Tag tone="accent">{fr.about.experience.current}</Tag>}
               </h3>
-              <p class="text-body font-medium">
-                {data.company} <span class="text-muted">· {data.contract}</span>
+              <p class="flex items-center gap-2 text-body font-medium">
+                {/* Avatar : logo de l'entreprise en noir sur gris clair (vide en attendant le logo). */}
+                <span
+                  class:list={[
+                    'grid size-6 shrink-0 place-items-center rounded-avatar bg-surface-hover text-ink',
+                    (data.logo && opticalFit[data.logo]) ?? '[&_svg]:size-2.5',
+                  ]}
+                  aria-hidden="true"
+                >
+                  {logo.svg && <Fragment set:html={logo.svg} />}
+                  {logo.image && <Image src={logo.image} alt="" width={10} densities={[1, 2]} class="size-2.5" />}
+                </span>
+                <span>
+                  {data.company} <span class="text-muted">· {data.contract}</span>
+                </span>
               </p>
               <p class="max-w-prose text-muted">{data.summary}</p>
-            </div>
-
-            {/* Sticker : desktop seulement, aligné en haut du poste et à droite. */}
-            <div class="hidden justify-end lg:col-start-4 lg:row-start-1 lg:flex lg:pb-16" aria-hidden="true">
-              {sticker ? (
-                <Image src={sticker} alt="" width={176} class="h-auto w-44" />
-              ) : (
-                <div
-                  class:list={[
-                    'grid place-items-center bg-placeholder',
-                    placeholderShapes[index % placeholderShapes.length],
-                  ]}
-                >
-                  <span class="label-micro">{fr.about.experience.sticker(data.company)}</span>
-                </div>
-              )}
             </div>
           </li>
         );

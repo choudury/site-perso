@@ -100,7 +100,6 @@ export const fr = {
       title: 'Parcours professionnel',
       current: 'Aujourd’hui',
       today: 'aujourd’hui',
-      sticker: (company: string) => `Sticker ${company}`,
     },
     education: {
       title: 'Études supérieures',

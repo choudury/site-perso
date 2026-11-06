@@ -1,22 +1,38 @@
 # Formations (page À propos), du diplôme le plus récent au plus ancien.
-# year : année d’obtention du diplôme.
-# mockup : visuel du diplôme (à venir) ; en attendant, un emplacement neutre s’affiche.
+# start / end : années de début et de fin de la formation.
+# school : établissement ; location : lieu des cours, affiché sous l’intitulé.
+# campus : photo du campus (src/assets/campus/), qui monte de travers au survol de la carte.
+# mockup : visuel du diplôme (src/assets/diplomes/, premier jet pour l’instant) ; sans visuel, un emplacement neutre s’affiche.
 
 - id: master
   order: 1
-  title: Master Stratégie de communication 360°, design et communication visuelle
-  school: Ynov Toulouse
-  year: '2023'
+  title: Mastère Stratégie de communication 360°, design et communication visuelle
+  school: Ynov Campus
+  location: Toulouse
+  start: '2021'
+  end: '2023'
+  campus: campus/ynov-toulouse.webp
+  mockup: diplomes/master.webp
   detail: Webdesign et UX, design thinking, data, référencement, webmarketing, stratégie de communication.
 
 - id: licence-pro
   order: 2
   title: Licence professionnelle Communication digitale et webmastering
   school: Université de Toulouse
-  year: '2021'
+  location: IUT de Castres
+  start: '2020'
+  end: '2021'
+  campus: campus/iut-castres.webp
+  mockup: diplomes/licence-pro.webp
+  detail: Création et gestion de sites web, référencement, réseaux sociaux et stratégie de communication digitale.
 
 - id: dut
   order: 3
   title: DUT Métiers du multimédia et de l’internet
   school: Université de Toulouse
-  year: '2020'
+  location: IUT de Castres
+  start: '2018'
+  end: '2020'
+  campus: campus/iut-castres.webp
+  mockup: diplomes/dut.webp
+  detail: Design graphique, développement web, audiovisuel et communication, avec des projets concrets en équipe.

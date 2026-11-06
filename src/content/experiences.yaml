@@ -7,6 +7,7 @@
   contract: Alternance puis CDI
   start: oct. 2021
   current: true
+  logo: logos/sawup.svg
   summary: Design, site, acquisition, contenu et réseaux sociaux d’une école en ligne de production musicale.
 
 - id: freelance
@@ -16,6 +17,7 @@
   contract: En parallèle
   start: oct. 2020
   current: true
+  logo: logo.svg
   summary: Identités visuelles, visuels et supports de communication, print, sites web et web design, pour des entreprises et des indépendants.
 
 - id: les-spartiates
@@ -25,4 +27,5 @@
   contract: Alternance
   start: août 2020
   end: août 2021
+  logo: logos/les-spartiates.svg
   summary: Community management, graphisme et gestion du site web.

@@ -107,6 +107,7 @@
   --radius-card: 16px; /* cartes, images */
   --radius-full: 9999px; /* voyant, curseur */
   --radius-flag: 2px; /* petits drapeaux */
+  --radius-avatar: 7px; /* petits avatars de logo (24 px) */
 
   /* ---------- Ombre (collage uniquement) ---------- */
   --shadow-*: initial;
